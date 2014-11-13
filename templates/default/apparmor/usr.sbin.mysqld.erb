@@ -1,0 +1,41 @@
+# vim:syntax=apparmor
+# Last Modified: Tue Jun 19 17:37:30 2007
+#include <tunables/global>
+
+/usr/sbin/mariadbd flags=(complain) {
+  #include <abstractions/base>
+  #include <abstractions/nameservice>
+  #include <abstractions/user-tmp>
+  #include <abstractions/mariadb>
+  #include <abstractions/winbind>
+
+  capability dac_override,
+  capability sys_resource,
+  capability setgid,
+  capability setuid,
+
+  network tcp,
+
+  /etc/hosts.allow r,
+  /etc/hosts.deny r,
+
+  /etc/mariadb/*.pem r,
+  /etc/mariadb/conf.d/ r,
+  /etc/mariadb/conf.d/* r,
+  /etc/mariadb/my.cnf r,
+  /usr/lib/mariadb/plugin/ r,
+  /usr/lib/mariadb/plugin/*.so* mr,
+  /usr/sbin/mariadbd mr,
+  /usr/share/mariadb/** r,
+  /var/log/mariadb.log rw,
+  /var/log/mariadb.err rw,
+  /var/lib/mariadb/ r,
+  <%= node['mariadb']['data_dir'] %>/ r,
+  <%= node['mariadb']['data_dir'] %>/** rwk,
+  /var/log/mariadb/ r,
+  /var/log/mariadb/* rw,
+  /var/run/mariadbd/mariadbd.pid w,
+  /var/run/mysqld/mysqld.sock w,
+
+  /sys/devices/system/cpu/ r,
+}

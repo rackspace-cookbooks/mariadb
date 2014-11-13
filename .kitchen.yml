@@ -1,0 +1,90 @@
+driver:
+  name: vagrant
+
+provisioner:
+  name: chef_zero
+
+platforms:
+  - name: centos-6.6
+    run_list:
+      - recipe[mariadb::repo]
+  - name: centos-7.0
+    run_list:
+      - recipe[mariadb::repo]
+  - name: fedora-19
+    run_list:
+      - recipe[mariadb::repo]
+  - name: fedora-20
+    run_list:
+      - recipe[mariadb::repo]
+  - name: debian-7.7
+    run_list:
+      - recipe[mariadb::repo]
+      - recipe[apt]
+  - name: ubuntu-12.04
+    run_list:
+      - recipe[mariadb::repo]
+      - recipe[apt]
+  - name: ubuntu-14.04
+    run_list:
+      - recipe[mariadb::repo]
+      - recipe[apt]
+ 
+suites:
+  - name: client
+    run_list:
+      - recipe[mariadb_client_test]
+
+  - name: server55-default
+    run_list:
+    - recipe[mariadb_test_custom::server]
+    attributes:
+      mariadb:
+        version: '5.5'
+        server_package_version: '5.5'
+
+  - name: server55-custom
+    run_list:
+    - recipe[mariadb_test_custom::server]
+    attributes:
+      mariadb:
+        version: '5.5'
+        server_package_version: '5.5'
+        port: '3308'
+        data_dir: '/data'
+
+  - name: server10-default
+    run_list:
+    - recipe[mariadb_test_custom::server]
+    attributes:
+      mariadb:
+        version: '10.0'
+        server_package_version: '10.0'
+
+  - name: server10-custom
+    run_list:
+    - recipe[mariadb_test_custom::server]
+    attributes:
+      mariadb:
+        version: '10.0'
+        server_package_version: '10.0'
+        port: '3308'
+        data_dir: '/data'
+
+  - name: server10.1-default
+    run_list:
+    - recipe[mariadb_test_custom::server]
+    attributes:
+      mariadb:
+        version: '10.1'
+        server_package_version: '10.1'
+
+  - name: server10.1-custom
+    run_list:
+    - recipe[mariadb_test_custom::server]
+    attributes:
+      mariadb:
+        version: '10.1'
+        server_package_version: '10.1'
+        port: '3308'
+        data_dir: '/data'

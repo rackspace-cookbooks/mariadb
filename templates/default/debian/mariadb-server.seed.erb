@@ -1,0 +1,10 @@
+mariadb-server-5.5        mariadb-server/root_password_again        select <%= @config.server_root_password %>
+mariadb-server-5.5        mariadb-server/root_password      select <%= @config.server_root_password %>
+mariadb-server-5.5        mariadb-server-5.5/really_downgrade       boolean false
+mariadb-server-5.5        mariadb-server-5.5/need_sarge_compat      boolean false
+mariadb-server-5.5        mariadb-server-5.5/start_on_boot  boolean false
+mariadb-server-5.5        mariadb-server/error_setting_password     boolean false
+mariadb-server-5.5        mariadb-server-5.5/nis_warning    note
+mariadb-server-5.5        mariadb-server-5.5/postrm_remove_databases        boolean false
+mariadb-server-5.5        mariadb-server/password_mismatch  boolean false
+mariadb-server-5.5        mariadb-server-5.5/need_sarge_compat_done boolean true
