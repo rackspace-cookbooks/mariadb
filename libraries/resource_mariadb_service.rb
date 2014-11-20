@@ -35,12 +35,12 @@ class Chef
     def parsed_data_dir
       return data_dir if data_dir
       case node['platform_family']
-      when 'rhel', 'fedora', 'suse', 'debian', 'omnios'
-        data_dir = '/var/lib/mariadb'
+      when 'rhel', 'fedora', 'suse', 'debian'
+        data_dir = '/var/lib/mysql'
       when 'smartos'
-        data_dir = '/opt/local/lib/mariadb'
+        data_dir = '/opt/local/lib/mysql'
       when 'freebsd'
-        data_dir = '/var/db/mariadb'
+        data_dir = '/var/db/mysql'
       end
       data_dir
     end

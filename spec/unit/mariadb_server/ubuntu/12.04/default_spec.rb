@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'mariadb_test_default::server on ubuntu-12.04' do
   let(:ubuntu_12_04_default_run) do
-    ChefSpec::Runner.new(
+    ChefSpec::SoloRunner.new(
       :platform => 'ubuntu',
       :version => '12.04'
       ) do |node|
@@ -15,7 +15,7 @@ describe 'mariadb_test_default::server on ubuntu-12.04' do
       expect(ubuntu_12_04_default_run).to create_mariadb_service('ubuntu_12_04_default').with(
         :parsed_version => '5.5',
         :parsed_port => '3306',
-        :parsed_data_dir => '/var/lib/mariadb'
+        :parsed_data_dir => '/var/lib/mysql'
         )
     end
   end

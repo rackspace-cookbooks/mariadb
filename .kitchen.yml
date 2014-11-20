@@ -1,6 +1,8 @@
 driver:
   name: vagrant
-
+  customize:
+    memory: 2048
+    cpus: 2
 provisioner:
   name: chef_zero
 
@@ -29,7 +31,7 @@ platforms:
     run_list:
       - recipe[mariadb::repo]
       - recipe[apt]
- 
+
 suites:
   - name: client
     run_list:

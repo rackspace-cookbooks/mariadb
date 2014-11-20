@@ -67,15 +67,15 @@ class Chef
 
           execute 'assign-root-password' do
             sensitive true if sensitive_supported?
-            cmd = "#{prefix_dir}/bin/mariadbadmin"
+            cmd = "#{prefix_dir}/bin/mysqladmin"
             cmd << ' -u root password '
             cmd << Shellwords.escape(new_resource.parsed_server_root_password)
             command cmd
             action :run
-            only_if "#{prefix_dir}/bin/mariadb -u root -e 'show databases;'"
+            only_if "#{prefix_dir}/bin/mysql -u root -e 'show databases;'"
           end
 
-          template '/etc/mariadb_grants.sql' do
+          template '/etc/mysql_grants.sql' do
             sensitive true if sensitive_supported?
             cookbook 'mariadb'
             source 'grants/grants.sql.erb'
@@ -89,15 +89,15 @@ class Chef
 
           execute 'install-grants' do
             sensitive true if sensitive_supported?
-            cmd = "#{prefix_dir}/bin/mariadb"
+            cmd = "#{prefix_dir}/bin/mysql"
             cmd << ' -u root '
-            cmd << "#{pass_string} < /etc/mariadb_grants.sql"
+            cmd << "#{pass_string} < /etc/mysql_grants.sql"
             command cmd
             action :nothing
             notifies :run, 'execute[create root marker]'
           end
 
-          template '/etc/mariadb/debian.cnf' do
+          template '/etc/mysql/debian.cnf' do
             cookbook 'mariadb'
             source 'debian/debian.cnf.erb'
             owner 'root'
@@ -109,38 +109,38 @@ class Chef
 
           #
           directory include_dir do
-            owner 'mariadb'
-            group 'mariadb'
+            owner 'mysql'
+            group 'mysql'
             mode '0750'
             recursive true
             action :create
           end
 
           directory run_dir do
-            owner 'mariadb'
-            group 'mariadb'
+            owner 'mysql'
+            group 'mysql'
             mode '0755'
             action :create
             recursive true
           end
 
           directory new_resource.parsed_data_dir do
-            owner 'mariadb'
-            group 'mariadb'
+            owner 'mysql'
+            group 'mysql'
             mode '0750'
             recursive true
             action :create
           end
 
-          template '/etc/mariadb/my.cnf' do
+          template '/etc/mysql/my.cnf' do
             if new_resource.parsed_template_source.nil?
               source "#{new_resource.parsed_version}/my.cnf.erb"
               cookbook 'mariadb'
             else
               source new_resource.parsed_template_source
             end
-            owner 'mariadb'
-            group 'mariadb'
+            owner 'mysql'
+            group 'mysql'
             mode '0600'
             variables(
               :data_dir => new_resource.parsed_data_dir,
@@ -152,14 +152,14 @@ class Chef
               )
             action :create
             notifies :run, 'bash[move mariadb data to datadir]'
-            notifies :restart, 'service[mariadb]'
+            notifies :restart, 'service[mysqld]'
           end
 
           bash 'move mariadb data to datadir' do
             user 'root'
             code <<-EOH
-              service mariadb stop \
-              && mv /var/lib/mariadb/* #{new_resource.parsed_data_dir}
+              service mysqld stop \
+              && mv /var/lib/mysql/* #{new_resource.parsed_data_dir}
               EOH
             creates "#{new_resource.parsed_data_dir}/ibdata1"
             creates "#{new_resource.parsed_data_dir}/ib_logfile0"
@@ -171,8 +171,8 @@ class Chef
             sensitive true if sensitive_supported?
             cmd = '/bin/echo'
             cmd << " '#{Shellwords.escape(new_resource.parsed_server_root_password)}'"
-            cmd << ' > /etc/.mariadb_root'
-            cmd << ' ;/bin/chmod 0600 /etc/.mariadb_root'
+            cmd << ' > /etc/.mysql_root'
+            cmd << ' ;/bin/chmod 0600 /etc/.mysql_root'
             command cmd
             action :nothing
           end
@@ -180,7 +180,7 @@ class Chef
       end
 
       action :restart do
-        service 'mariadb' do
+        service 'mysqld' do
           provider Chef::Provider::Service::Init::Debian
           supports :restart => true
           action :restart
@@ -188,7 +188,7 @@ class Chef
       end
 
       action :reload do
-        service 'mariadb' do
+        service 'mysqld' do
           provider Chef::Provider::Service::Init::Debian
           action :reload
         end

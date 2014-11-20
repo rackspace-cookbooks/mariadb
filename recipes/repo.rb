@@ -20,14 +20,14 @@
 # this is a picker based on https://downloads.mariadb.org/mariadb/repositories/
 
 apt_repository 'mariadb-apt-repo' do
-  uri "http://ftp.osuosl.org/pub/mariadb/repo/#{node['mariadb']['server_package_version']}/#{node['platform']}"
+  uri "http://mirrors.syringanetworks.net/mariadb/repo/#{node['mariadb']['server_package_version']}/#{node['platform']}"
   distribution node['lsb']['codename']
   components ['main']
-  keyserver 'keyserver.ubuntu.com'
+  keyserver 'hkp://keyserver.ubuntu.com:80'
   key '0xcbcb082a1bb943db'
   deb_src true
-  action 'add'
-  only_if { platform_family?('debain') }
+  action :add
+  only_if { platform_family?('debian') }
 end
 
 if platform_family?('rhel') || platform_family?('fedora')
@@ -41,6 +41,6 @@ if platform_family?('rhel') || platform_family?('fedora')
     description 'MariaDB repository'
     baseurl repourl
     gpgkey 'https://yum.mariadb.org/RPM-GPG-KEY-MariaDB'
-    action 'create'
+    action :create
   end
 end
