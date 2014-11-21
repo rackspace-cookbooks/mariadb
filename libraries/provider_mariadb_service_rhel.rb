@@ -100,7 +100,8 @@ class Chef
               :pid_file => pid_file,
               :port => new_resource.parsed_port,
               :socket_file => socket_file,
-              :enable_utf8 => new_resource.parsed_enable_utf8
+              :enable_utf8 => new_resource.parsed_enable_utf8,
+              :include_dir => '/etc/mysql/conf.d'
               )
             action :create
             notifies :run, 'bash[move mariadb data to datadir]'
