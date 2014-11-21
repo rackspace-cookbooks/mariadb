@@ -16,70 +16,71 @@ describe 'stepped into mariadb_test_default::server on amazon-2014.03' do
 port                           = 3306
 socket                         = /var/lib/mysql/mysql.sock
 
-[mariadbd_safe]
+[mysqld_safe]
 socket                         = /var/lib/mysql/mysql.sock
 
-[mariadbd]
-user                           = mariadb
-pid-file                       = /var/run/mariadbd/mariadb.pid
+[mysqld]
+user                           = mysql
+pid-file                       = /var/run/mysqld/mysql.pid
 socket                         = /var/lib/mysql/mysql.sock
 port                           = 3306
-datadir                        = /var/lib/mariadb
+datadir                        = /var/lib/mysql
+sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
 
-[mariadb]
-!includedir /etc/mariadb/conf.d
+[mysql]
+!includedir /etc/mysql/conf.d
 '
   end
 
   let(:grants_sql_content_default_amazon_2014_03) do
-    "DELETE FROM mariadb.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
-UPDATE mariadb.user SET Password=PASSWORD('ilikerandompasswords') WHERE User='root';
-DELETE FROM mariadb.user WHERE User='';
+    "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
+UPDATE mysql.user SET Password=PASSWORD('ilikerandompasswords') WHERE User='root';
+DELETE FROM mysql.user WHERE User='';
 DROP DATABASE IF EXISTS test;
-DELETE FROM mariadb.db WHERE Db='test' OR Db='test\\_%';
+DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
 SET PASSWORD FOR 'root'@'localhost' = PASSWORD('ilikerandompasswords');
 SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('ilikerandompasswords');"
   end
 
   before do
-    stub_command("/usr/bin/mariadb -u root -e 'show databases;'").and_return(true)
+    stub_command("/usr/bin/mysql -u root -e 'show databases;'").and_return(true)
   end
 
   context 'when using default parameters' do
     it 'creates mariadb_service[amazon_2014_03_default]' do
       expect(amazon_2014_03_default_run).to create_mariadb_service('amazon_2014_03_default').with(
-        :parsed_version => '5.5',
+        :parsed_version => '10.0',
         :parsed_port => '3306',
-        :parsed_data_dir => '/var/lib/mariadb'
+        :parsed_data_dir => '/var/lib/mysql'
         )
     end
 
     it 'steps into mariadb_service and installs package[community-mariadb-server]' do
-      expect(amazon_2014_03_default_run).to install_package('mariadb-community-server')
+      expect(amazon_2014_03_default_run).to install_package('MariaDB-server')
     end
 
-    it 'steps into mariadb_service and creates directory[/etc/mariadb/conf.d]' do
-      expect(amazon_2014_03_default_run).to create_directory('/etc/mariadb/conf.d').with(
-        :owner => 'mariadb',
-        :group => 'mariadb',
+    it 'steps into mariadb_service and creates directory[/etc/mysql/conf.d]' do
+      expect(amazon_2014_03_default_run).to create_directory('/etc/mysql/conf.d').with(
+        :owner => 'mysql',
+        :group => 'mysql',
         :mode => '0750',
         :recursive => true
         )
     end
 
-    it 'steps into mariadb_service and creates directory[/var/run/mariadbd]' do
-      expect(amazon_2014_03_default_run).to create_directory('/var/run/mariadbd').with(
-        :owner => 'mariadb',
-        :group => 'mariadb',
+    it 'steps into mariadb_service and creates directory[/var/run/mysqld]' do
+      expect(amazon_2014_03_default_run).to create_directory('/var/run/mysqld').with(
+        :owner => 'mysql',
+        :group => 'mysql',
         :mode => '0755',
         :recursive => true
         )
     end
 
-    it 'steps into mariadb_service and creates directory[/var/lib/mariadb]' do
-      expect(amazon_2014_03_default_run).to create_directory('/var/lib/mariadb').with(
-        :owner => 'mariadb',
-        :group => 'mariadb',
+    it 'steps into mariadb_service and creates directory[/var/lib/mysql]' do
+      expect(amazon_2014_03_default_run).to create_directory('/var/lib/mysql').with(
+        :owner => 'mysql',
+        :group => 'mysql',
         :mode => '0755',
         :recursive => true
         )
@@ -88,8 +89,8 @@ SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('ilikerandompasswords');"
     it 'steps into mariadb_service and creates template[/etc/my.cnf]' do
       expect(amazon_2014_03_default_run).to create_template('/etc/my.cnf').with(
         :cookbook => 'mariadb',
-        :owner => 'mariadb',
-        :group => 'mariadb',
+        :owner => 'mysql',
+        :group => 'mysql',
         :mode => '0600'
         )
     end
@@ -104,9 +105,9 @@ SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('ilikerandompasswords');"
       expect(amazon_2014_03_default_run).to_not run_bash('move mariadb data to datadir')
     end
 
-    it 'steps into mariadb_service and creates service[mariadbd]' do
-      expect(amazon_2014_03_default_run).to start_service('mariadbd')
-      expect(amazon_2014_03_default_run).to enable_service('mariadbd')
+    it 'steps into mariadb_service and creates service[mysqld]' do
+      expect(amazon_2014_03_default_run).to start_service('mysqld')
+      expect(amazon_2014_03_default_run).to enable_service('mysqld')
     end
 
     it 'steps into mariadb_service and runs execute[wait for mariadb]' do
@@ -115,12 +116,12 @@ SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('ilikerandompasswords');"
 
     it 'steps into mariadb_service and creates execute[assign-root-password]' do
       expect(amazon_2014_03_default_run).to run_execute('assign-root-password').with(
-        :command => '/usr/bin/mariadbadmin -u root password ilikerandompasswords'
+        :command => '/usr/bin/mysqladmin -u root password ilikerandompasswords'
         )
     end
 
-    it 'steps into mariadb_service and creates template[/etc/mariadb_grants.sql]' do
-      expect(amazon_2014_03_default_run).to create_template('/etc/mariadb_grants.sql').with(
+    it 'steps into mariadb_service and creates template[/etc/mysql_grants.sql]' do
+      expect(amazon_2014_03_default_run).to create_template('/etc/mysql_grants.sql').with(
         :cookbook => 'mariadb',
         :owner => 'root',
         :group => 'root',
@@ -128,15 +129,15 @@ SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('ilikerandompasswords');"
         )
     end
 
-    it 'steps into mariadb_service and renders file[/etc/mariadb_grants.sql]' do
-      expect(amazon_2014_03_default_run).to render_file('/etc/mariadb_grants.sql').with_content(
+    it 'steps into mariadb_service and renders file[/etc/mysql_grants.sql]' do
+      expect(amazon_2014_03_default_run).to render_file('/etc/mysql_grants.sql').with_content(
         grants_sql_content_default_amazon_2014_03
         )
     end
 
     it 'steps into mariadb_service and creates execute[install-grants]' do
       expect(amazon_2014_03_default_run).to_not run_execute('install-grants').with(
-        :command => '/usr/bin/mariadb -u root -pilikerandompasswords < /etc/mariadb_grants.sql'
+        :command => '/usr/bin/mysql -u root -pilikerandompasswords < /etc/mysql_grants.sql'
         )
     end
   end

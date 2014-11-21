@@ -35,35 +35,35 @@ GRANT ALL PRIVILEGES ON *.* TO 'root'@'1.2.3.4/5' IDENTIFIED BY 'YUNOSETPASSWORD
   end
 
   before do
-    stub_command("/usr/bin/mariadb -u root -e 'show databases;'").and_return(true)
+    stub_command("/usr/bin/mysql -u root -e 'show databases;'").and_return(true)
   end
 
   context 'when using default parameters' do
     it 'creates mariadb_service[amazon_2014_03_custom]' do
       expect(amazon_2014_03_custom_run).to create_mariadb_service('amazon_2014_03_custom').with(
-        :parsed_version => '5.5',
+        :parsed_version => '10.1',
         :parsed_port => '3308',
         :parsed_data_dir => '/data'
         )
     end
 
-    it 'steps into mariadb_service and installs package[mariadb-community-server]' do
-      expect(amazon_2014_03_custom_run).to install_package('mariadb-community-server')
+    it 'steps into mariadb_service and installs package[MariaDB-server]' do
+      expect(amazon_2014_03_custom_run).to install_package('MariaDB-server')
     end
 
-    it 'steps into mariadb_service and creates directory[/etc/mariadb/conf.d]' do
-      expect(amazon_2014_03_custom_run).to create_directory('/etc/mariadb/conf.d').with(
-        :owner => 'mariadb',
-        :group => 'mariadb',
+    it 'steps into mariadb_service and creates directory[/etc/mysql/conf.d]' do
+      expect(amazon_2014_03_custom_run).to create_directory('/etc/mysql/conf.d').with(
+        :owner => 'mysql',
+        :group => 'mysql',
         :mode => '0750',
         :recursive => true
         )
     end
 
-    it 'steps into mariadb_service and creates directory[/var/run/mariadbd]' do
-      expect(amazon_2014_03_custom_run).to create_directory('/var/run/mariadbd').with(
-        :owner => 'mariadb',
-        :group => 'mariadb',
+    it 'steps into mariadb_service and creates directory[/var/run/mysqld]' do
+      expect(amazon_2014_03_custom_run).to create_directory('/var/run/mysqld').with(
+        :owner => 'mysql',
+        :group => 'mysql',
         :mode => '0755',
         :recursive => true
         )
@@ -71,8 +71,8 @@ GRANT ALL PRIVILEGES ON *.* TO 'root'@'1.2.3.4/5' IDENTIFIED BY 'YUNOSETPASSWORD
 
     it 'steps into mariadb_service and creates directory[/data]' do
       expect(amazon_2014_03_custom_run).to create_directory('/data').with(
-        :owner => 'mariadb',
-        :group => 'mariadb',
+        :owner => 'mysql',
+        :group => 'mysql',
         :mode => '0755',
         :recursive => true
         )
@@ -80,8 +80,8 @@ GRANT ALL PRIVILEGES ON *.* TO 'root'@'1.2.3.4/5' IDENTIFIED BY 'YUNOSETPASSWORD
 
     it 'steps into mariadb_service and creates template[/etc/my.cnf]' do
       expect(amazon_2014_03_custom_run).to create_template('/etc/my.cnf').with(
-        :owner => 'mariadb',
-        :group => 'mariadb',
+        :owner => 'mysql',
+        :group => 'mysql',
         :mode => '0600'
         )
     end
@@ -92,9 +92,9 @@ GRANT ALL PRIVILEGES ON *.* TO 'root'@'1.2.3.4/5' IDENTIFIED BY 'YUNOSETPASSWORD
         )
     end
 
-    it 'steps into mariadb_service and creates service[mariadbd]' do
-      expect(amazon_2014_03_custom_run).to start_service('mariadbd')
-      expect(amazon_2014_03_custom_run).to enable_service('mariadbd')
+    it 'steps into mariadb_service and creates service[mysqld]' do
+      expect(amazon_2014_03_custom_run).to start_service('mysqld')
+      expect(amazon_2014_03_custom_run).to enable_service('mysqld')
     end
 
     it 'steps into mariadb_service and runs execute[wait for mariadb]' do
@@ -103,12 +103,12 @@ GRANT ALL PRIVILEGES ON *.* TO 'root'@'1.2.3.4/5' IDENTIFIED BY 'YUNOSETPASSWORD
 
     it 'steps into mariadb_service and creates execute[assign-root-password]' do
       expect(amazon_2014_03_custom_run).to run_execute('assign-root-password').with(
-        :command => '/usr/bin/mariadbadmin -u root password YUNOSETPASSWORD'
+        :command => '/usr/bin/mysqladmin -u root password YUNOSETPASSWORD'
         )
     end
 
-    it 'steps into mariadb_service and creates template[/etc/mariadb_grants.sql]' do
-      expect(amazon_2014_03_custom_run).to create_template('/etc/mariadb_grants.sql').with(
+    it 'steps into mariadb_service and creates template[/etc/mysql_grants.sql]' do
+      expect(amazon_2014_03_custom_run).to create_template('/etc/mysql_grants.sql').with(
         :cookbook => 'mariadb',
         :owner => 'root',
         :group => 'root',
@@ -116,15 +116,15 @@ GRANT ALL PRIVILEGES ON *.* TO 'root'@'1.2.3.4/5' IDENTIFIED BY 'YUNOSETPASSWORD
         )
     end
 
-    it 'steps into mariadb_service and renders file[/etc/mariadb_grants.sql]' do
-      expect(amazon_2014_03_custom_run).to render_file('/etc/mariadb_grants.sql').with_content(
+    it 'steps into mariadb_service and renders file[/etc/mysql_grants.sql]' do
+      expect(amazon_2014_03_custom_run).to render_file('/etc/mysql_grants.sql').with_content(
         grants_sql_content_custom_amazon_2014_03
         )
     end
 
     it 'steps into mariadb_service and creates execute[install-grants]' do
       expect(amazon_2014_03_custom_run).to_not run_execute('install-grants').with(
-        :command => '/usr/bin/mariadb -u root -pYUNOSETPASSWORD < /etc/mariadb_grants.sql'
+        :command => '/usr/bin/mysql -u root -pYUNOSETPASSWORD < /etc/mysql_grants.sql'
         )
     end
 
