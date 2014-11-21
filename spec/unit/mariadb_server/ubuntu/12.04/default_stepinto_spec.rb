@@ -16,17 +16,17 @@ describe 'stepped into mariadb_test_default::server on ubuntu-12.04' do
 port                           = 3306
 socket                         = /var/run/mysqld/mysqld.sock
 
-[mariadbd_safe]
+[mysqld_safe]
 socket                         = /var/run/mysqld/mysqld.sock
 
-[mariadbd]
+[mysqld]
 user                           = mysql
-pid-file                       = /var/run/mmysqld/mysqld.pid
+pid-file                       = /var/run/mysqld/mysqld.pid
 socket                         = /var/run/mysqld/mysqld.sock
 port                           = 3306
 datadir                        = /var/lib/mysql
 
-[mariadb]
+[mysql]
 !includedir /etc/mysql/conf.d
 '
   end
@@ -108,7 +108,7 @@ datadir                        = /var/lib/mysql
         )
     end
 
-    it 'steps into mariadb_service and creates service[mariadb]' do
+    it 'steps into mariadb_service and creates service[mysql]' do
       expect(ubuntu_12_04_default_run).to start_service('mysql')
       expect(ubuntu_12_04_default_run).to enable_service('mysql')
     end
@@ -122,8 +122,8 @@ datadir                        = /var/lib/mysql
         )
     end
 
-    it 'steps into mariadb_service and creates directory[/var/run/mysql]' do
-      expect(ubuntu_12_04_default_run).to create_directory('/var/run/mysql').with(
+    it 'steps into mariadb_service and creates directory[/var/run/mysqld]' do
+      expect(ubuntu_12_04_default_run).to create_directory('/var/run/mysqld').with(
         :owner => 'mysql',
         :group => 'mysql',
         :mode => '0755',
@@ -147,8 +147,8 @@ datadir                        = /var/lib/mysql
         )
     end
 
-    it 'steps into mariadb_service and creates template[/etc/mariadb_grants.sql]' do
-      expect(ubuntu_12_04_default_run).to create_template('/etc/mariadb_grants.sql').with(
+    it 'steps into mariadb_service and creates template[/etc/mysql_grants.sql]' do
+      expect(ubuntu_12_04_default_run).to create_template('/etc/mysql_grants.sql').with(
         :cookbook => 'mariadb',
         :owner => 'root',
         :group => 'root',
@@ -158,7 +158,7 @@ datadir                        = /var/lib/mysql
 
     it 'steps into mariadb_service and creates execute[install-grants]' do
       expect(ubuntu_12_04_default_run).to_not run_execute('install-grants').with(
-        :command => '/usr/bin/mysql -u root -pilikerandompasswords < /etc/mariadb_grants.sql'
+        :command => '/usr/bin/mysql -u root -pilikerandompasswords < /etc/mysql_grants.sql'
         )
     end
 

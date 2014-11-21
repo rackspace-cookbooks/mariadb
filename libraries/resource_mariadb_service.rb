@@ -123,12 +123,8 @@ class Chef
           default_version = '5.6'
         when 'jessie/sid', '12.04', '13.04', '13.10', '14.04'
           default_version = '5.5'
-        when '10.04'
-          default_version = '5.1'
         end
       when 'smartos'
-        default_version = '5.5'
-      when 'omnios'
         default_version = '5.5'
       when 'freebsd'
         default_version = '5.5'

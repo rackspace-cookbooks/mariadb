@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'stepped into mariadb_test_default::server on ubuntu-14.04' do
   let(:ubuntu_14_04_default_run) do
-    ChefSpec::Runner.new(
+    ChefSpec::SoloRunner.new(
       :step_into => 'mariadb_service',
       :platform => 'ubuntu',
       :version => '14.04'
@@ -16,18 +16,18 @@ describe 'stepped into mariadb_test_default::server on ubuntu-14.04' do
 port                           = 3306
 socket                         = /var/run/mysqld/mysqld.sock
 
-[mariadbd_safe]
+[mysqld_safe]
 socket                         = /var/run/mysqld/mysqld.sock
 
-[mariadbd]
-user                           = mariadb
-pid-file                       = /var/run/mariadbd/mariadb.pid
+[mysqld]
+user                           = mysql
+pid-file                       = /var/run/mysqld/mysqld.pid
 socket                         = /var/run/mysqld/mysqld.sock
 port                           = 3306
-datadir                        = /var/lib/mariadb
+datadir                        = /var/lib/mysql
 
-[mariadb]
-!includedir /etc/mariadb/conf.d
+[mysql]
+!includedir /etc/mysql/conf.d
 '
   end
 
@@ -42,7 +42,7 @@ SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('ilikerandompasswords');"
   end
 
   before do
-    stub_command("/usr/bin/mariadb -u root -e 'show databases;'").and_return(true)
+    stub_command("/usr/bin/mysql -u root -e 'show databases;'").and_return(true)
   end
 
   context 'when using default parameters' do
@@ -50,7 +50,7 @@ SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('ilikerandompasswords');"
       expect(ubuntu_14_04_default_run).to create_mariadb_service('ubuntu_14_04_default').with(
         :parsed_version => '5.5',
         :parsed_port => '3306',
-        :parsed_data_dir => '/var/lib/mariadb'
+        :parsed_data_dir => '/var/lib/mysql'
         )
     end
 
@@ -94,8 +94,8 @@ SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('ilikerandompasswords');"
         )
     end
 
-    it 'steps into mariadb_service and creates template[/etc/mariadb/debian.cnf]' do
-      expect(ubuntu_14_04_default_run).to create_template('/etc/mariadb/debian.cnf').with(
+    it 'steps into mariadb_service and creates template[/etc/mysql/debian.cnf]' do
+      expect(ubuntu_14_04_default_run).to create_template('/etc/mysql/debian.cnf').with(
         :cookbook => 'mariadb',
         :source => 'debian/debian.cnf.erb',
         :owner => 'root',
@@ -104,8 +104,8 @@ SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('ilikerandompasswords');"
         )
     end
 
-    it 'steps into mariadb_service and creates template[/etc/apparmor.d/usr.sbin.mariadbd]' do
-      expect(ubuntu_14_04_default_run).to create_template('/etc/apparmor.d/usr.sbin.mariadbd').with(
+    it 'steps into mariadb_service and creates template[/etc/apparmor.d/usr.sbin.mysqld]' do
+      expect(ubuntu_14_04_default_run).to create_template('/etc/apparmor.d/usr.sbin.mysqld').with(
         :cookbook => 'mariadb',
         :owner => 'root',
         :group => 'root',
@@ -113,37 +113,37 @@ SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('ilikerandompasswords');"
         )
     end
 
-    it 'steps into mariadb_service and creates service[apparmor-mariadb]' do
-      expect(ubuntu_14_04_default_run).to_not start_service('apparmor-mariadb')
+    it 'steps into mariadb_service and creates service[apparmor-mysqld]' do
+      expect(ubuntu_14_04_default_run).to_not start_service('apparmor-mysqld')
     end
 
-    it 'steps into mariadb_service and creates service[mariadb]' do
-      expect(ubuntu_14_04_default_run).to start_service('mariadb')
-      expect(ubuntu_14_04_default_run).to enable_service('mariadb')
+    it 'steps into mariadb_service and creates service[mysql]' do
+      expect(ubuntu_14_04_default_run).to start_service('mysql')
+      expect(ubuntu_14_04_default_run).to enable_service('mysql')
     end
 
-    it 'steps into mariadb_service and creates directory[/etc/mariadb/conf.d]' do
-      expect(ubuntu_14_04_default_run).to create_directory('/etc/mariadb/conf.d').with(
-        :owner => 'mariadb',
-        :group => 'mariadb',
+    it 'steps into mariadb_service and creates directory[/etc/mysql/conf.d]' do
+      expect(ubuntu_14_04_default_run).to create_directory('/etc/mysql/conf.d').with(
+        :owner => 'mysql',
+        :group => 'mysql',
         :mode => '0750',
         :recursive => true
         )
     end
 
-    it 'steps into mariadb_service and creates directory[/var/run/mariadbd]' do
-      expect(ubuntu_14_04_default_run).to create_directory('/var/run/mariadbd').with(
-        :owner => 'mariadb',
-        :group => 'mariadb',
+    it 'steps into mariadb_service and creates directory[/var/run/mysqld]' do
+      expect(ubuntu_14_04_default_run).to create_directory('/var/run/mysqld').with(
+        :owner => 'mysql',
+        :group => 'mysql',
         :mode => '0755',
         :recursive => true
         )
     end
 
-    it 'steps into mariadb_service and creates directory[/var/lib/mariadb]' do
-      expect(ubuntu_14_04_default_run).to create_directory('/var/lib/mariadb').with(
-        :owner => 'mariadb',
-        :group => 'mariadb',
+    it 'steps into mariadb_service and creates directory[/var/lib/mysql]' do
+      expect(ubuntu_14_04_default_run).to create_directory('/var/lib/mysql').with(
+        :owner => 'mysql',
+        :group => 'mysql',
         :mode => '0750',
         :recursive => true
         )
@@ -152,12 +152,12 @@ SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('ilikerandompasswords');"
     # mariadb data
     it 'steps into mariadb_service and creates execute[assign-root-password]' do
       expect(ubuntu_14_04_default_run).to run_execute('assign-root-password').with(
-        :command => '/usr/bin/mariadbadmin -u root password ilikerandompasswords'
+        :command => '/usr/bin/mysqladmin -u root password ilikerandompasswords'
         )
     end
 
-    it 'steps into mariadb_service and creates template[/etc/mariadb_grants.sql]' do
-      expect(ubuntu_14_04_default_run).to create_template('/etc/mariadb_grants.sql').with(
+    it 'steps into mariadb_service and creates template[/etc/mysql_grants.sql]' do
+      expect(ubuntu_14_04_default_run).to create_template('/etc/mysql_grants.sql').with(
         :cookbook => 'mariadb',
         :owner => 'root',
         :group => 'root',
@@ -165,29 +165,29 @@ SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('ilikerandompasswords');"
         )
     end
 
-    it 'steps into mariadb_service and renders file[/etc/mariadb_grants.sql]' do
-      expect(ubuntu_14_04_default_run).to render_file('/etc/mariadb_grants.sql').with_content(
+    it 'steps into mariadb_service and renders file[/etc/mysql_grants.sql]' do
+      expect(ubuntu_14_04_default_run).to render_file('/etc/mysql_grants.sql').with_content(
         grants_sql_content_default_ubuntu_14_04
         )
     end
 
     it 'steps into mariadb_service and creates execute[install-grants]' do
       expect(ubuntu_14_04_default_run).to_not run_execute('install-grants').with(
-        :command => '/usr/bin/mariadb -u root -pilikerandompasswords < /etc/mariadb_grants.sql'
+        :command => '/usr/bin/mysql -u root -pilikerandompasswords < /etc/mysql_grants.sql'
         )
     end
 
-    it 'steps into mariadb_service and creates template[/etc/mariadb/my.cnf]' do
-      expect(ubuntu_14_04_default_run).to create_template('/etc/mariadb/my.cnf').with(
+    it 'steps into mariadb_service and creates template[/etc/mysql/my.cnf]' do
+      expect(ubuntu_14_04_default_run).to create_template('/etc/mysql/my.cnf').with(
         :cookbook => 'mariadb',
-        :owner => 'mariadb',
-        :group => 'mariadb',
+        :owner => 'mysql',
+        :group => 'mysql',
         :mode => '0600'
         )
     end
 
-    it 'steps into mariadb_service and renders file[/etc/mariadb/my.cnf]' do
-      expect(ubuntu_14_04_default_run).to render_file('/etc/mariadb/my.cnf').with_content(
+    it 'steps into mariadb_service and renders file[/etc/mysql/my.cnf]' do
+      expect(ubuntu_14_04_default_run).to render_file('/etc/mysql/my.cnf').with_content(
         my_cnf_5_5_content_default_ubuntu_14_04
         )
     end
