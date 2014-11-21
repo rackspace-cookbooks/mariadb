@@ -5,7 +5,7 @@ class Chef
     class MariadbClient
       class Fedora < Chef::Provider::MariadbClient
         def packages
-          %w(community-mariadb community-mariadb-devel)
+          %w(MariaDB-client MariaDB-devel)
         end
       end
     end
