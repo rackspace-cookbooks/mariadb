@@ -24,7 +24,6 @@ class Chef
 
           package new_resource.parsed_package_name do
             action new_resource.parsed_package_action
-            version new_resource.parsed_package_version
           end
 
           directory include_dir do
@@ -51,7 +50,7 @@ class Chef
             recursive true
           end
 
-          service 'mysqld' do
+          service 'mysql' do
             supports :restart => true
             action [:start, :enable]
           end
@@ -106,13 +105,13 @@ class Chef
               )
             action :create
             notifies :run, 'bash[move mariadb data to datadir]'
-            notifies :restart, 'service[mysqld]'
+            notifies :restart, 'service[mysql]'
           end
 
           bash 'move mariadb data to datadir' do
             user 'root'
             code <<-EOH
-              service mysqld stop \
+              service mysql stop \
               && for i in `ls /var/lib/mysql | grep -v mysqld.sock` ; do mv /var/lib/mysql/$i #{new_resource.parsed_data_dir} ; done
               EOH
             action :nothing
@@ -144,14 +143,14 @@ class Chef
       end
 
       action :restart do
-        service 'mysqld' do
+        service 'mysql' do
           supports :restart => true
           action :restart
         end
       end
 
       action :reload do
-        service 'mysqld' do
+        service 'mysql' do
           action :reload
         end
       end

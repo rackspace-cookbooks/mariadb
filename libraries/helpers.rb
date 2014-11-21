@@ -28,12 +28,6 @@ module Opscode
           else
             platform_version.to_i.to_s
           end
-        when platform_family == 'smartos'
-          platform_version
-        when platform_family == 'omnios'
-          platform_version
-        when platform_family == 'freebsd'
-          platform_version.to_i.to_s
         end
       rescue NoMethodError
         nil
@@ -92,24 +86,24 @@ module Opscode
           'fedora' => {
             '19' => {
               '5.5' => {
-                'package_name' => 'MariaDB-server'
+                'package_name' => 'MariaDB'
               },
               '10.0' => {
-                'package_name' => 'MariaDB-server'
+                'package_name' => 'MariaDB'
               },
               '10.1' => {
-                'package_name' => 'MariaDB-server'
+                'package_name' => 'MariaDB'
               }
             },
             '20' => {
               '5.5' => {
-                'package_name' => 'MariaDB-server'
+                'package_name' => 'MariaDB'
               },
               '10.0' => {
-                'package_name' => 'MariaDB-server'
+                'package_name' => 'MariaDB'
               },
               '10.1' => {
-                'package_name' => 'MariaDB-server'
+                'package_name' => 'MariaDB'
               }
             }
           },

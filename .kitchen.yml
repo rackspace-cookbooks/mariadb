@@ -1,7 +1,7 @@
 driver:
   name: vagrant
   customize:
-    memory: 2048
+    memory: 512
     cpus: 2
 provisioner:
   name: chef_zero
@@ -10,9 +10,9 @@ platforms:
   - name: centos-6.6
     run_list:
       - recipe[mariadb::repo]
-  - name: centos-7.0
-    run_list:
-      - recipe[mariadb::repo]
+#  - name: centos-7.0
+#    run_list:
+#      - recipe[mariadb::repo]
   - name: fedora-19
     run_list:
       - recipe[mariadb::repo]

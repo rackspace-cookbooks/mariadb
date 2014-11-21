@@ -35,12 +35,8 @@ class Chef
     def parsed_data_dir
       return data_dir if data_dir
       case node['platform_family']
-      when 'rhel', 'fedora', 'suse', 'debian'
+      when 'rhel', 'fedora', 'debian'
         data_dir = '/var/lib/mysql'
-      when 'smartos'
-        data_dir = '/opt/local/lib/mysql'
-      when 'freebsd'
-        data_dir = '/var/db/mysql'
       end
       data_dir
     end
@@ -107,11 +103,8 @@ class Chef
       when 'fedora'
         default_version = '10.0'
       when 'debian'
-        return '5.1' if node['platform_version'].to_i == 6
         return '5.5' if node['platform_version'].to_i == 7
         case node['platform_version']
-        when '14.10'
-          default_version = '5.6'
         when 'jessie/sid', '12.04', '13.04', '13.10', '14.04'
           default_version = '5.5'
         end
