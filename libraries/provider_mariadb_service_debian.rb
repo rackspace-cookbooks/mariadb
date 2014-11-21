@@ -22,8 +22,6 @@ class Chef
             Chef::Log.debug("Sensitive attribute disabled, chef-client version #{Chef::VERSION} is lower than 11.14.0")
           end
 
-          include_recpie 'mariadb::repo'
-
           package 'debconf-utils' do
             action :install
           end
@@ -59,7 +57,7 @@ class Chef
           end
 
           # service
-          service 'mariadb' do
+          service 'mysql' do
             provider Chef::Provider::Service::Init::Debian
             supports :restart => true
             action [:start, :enable]
@@ -152,13 +150,13 @@ class Chef
               )
             action :create
             notifies :run, 'bash[move mariadb data to datadir]'
-            notifies :restart, 'service[mysqld]'
+            notifies :restart, 'service[mysql]'
           end
 
           bash 'move mariadb data to datadir' do
             user 'root'
             code <<-EOH
-              service mysqld stop \
+              service mysql stop \
               && mv /var/lib/mysql/* #{new_resource.parsed_data_dir}
               EOH
             creates "#{new_resource.parsed_data_dir}/ibdata1"
@@ -180,7 +178,7 @@ class Chef
       end
 
       action :restart do
-        service 'mysqld' do
+        service 'mysql' do
           provider Chef::Provider::Service::Init::Debian
           supports :restart => true
           action :restart
@@ -188,7 +186,7 @@ class Chef
       end
 
       action :reload do
-        service 'mysqld' do
+        service 'mysql' do
           provider Chef::Provider::Service::Init::Debian
           action :reload
         end

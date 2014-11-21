@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-describe 'stepped into mariadb_test_custom::server on debian-7.2' do
-  let(:debian_7_2_custom_run) do
+describe 'stepped into mariadb_test_custom::server on debian-7.5' do
+  let(:debian_7_5_custom_run) do
     ChefSpec::Runner.new(
       :step_into => 'mariadb_service',
       :platform => 'debian',
-      :version => '7.2'
+      :version => '7.5'
       ) do |node|
-      node.set['mariadb']['service_name'] = 'debian_7_2_custom'
-      node.set['mariadb']['version'] = '5.5'
+      node.set['mariadb']['service_name'] = 'debian_7_5_custom'
+      node.set['mariadb']['version'] = '10.1'
       node.set['mariadb']['port'] = '3308'
       node.set['mariadb']['data_dir'] = '/data'
       node.set['mariadb']['template_source'] = 'custom.erb'
@@ -22,11 +22,11 @@ describe 'stepped into mariadb_test_custom::server on debian-7.2' do
     end.converge('mariadb_test_custom::server')
   end
 
-  let(:my_cnf_5_5_content_custom_debian_7_2) do
+  let(:my_cnf_10_1_content_custom_debian_7_5) do
     'This my template. There are many like it but this one is mine.'
   end
 
-  let(:grants_sql_content_custom_debian_7_2) do
+  let(:grants_sql_content_custom_debian_7_5) do
     "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, RELOAD, SHUTDOWN, PROCESS, FILE, REFERENCES, INDEX, ALTER, SHOW DATABASES, SUPER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'debian-sys-maint'@'localhost' IDENTIFIED BY 'postinstallscriptsarestupid' WITH GRANT OPTION;
 GRANT REPLICATION SLAVE ON *.* TO 'repl'@'%' identified by 'syncmebabyonemoretime';
 GRANT ALL ON *.* TO 'root'@'%' IDENTIFIED BY 'YUNOSETPASSWORD' WITH GRANT OPTION;
@@ -37,24 +37,24 @@ GRANT ALL PRIVILEGES ON *.* TO 'root'@'1.2.3.4/5' IDENTIFIED BY 'YUNOSETPASSWORD
   end
 
   before do
-    stub_command("/usr/bin/mariadb -u root -e 'show databases;'").and_return(true)
+    stub_command("/usr/bin/mysql -u root -e 'show databases;'").and_return(true)
   end
 
   context 'when using default parameters' do
-    it 'creates mariadb_service[debian_7_2_custom]' do
-      expect(debian_7_2_custom_run).to create_mariadb_service('debian_7_2_custom').with(
-        :version => '5.5',
+    it 'creates mariadb_service[debian_7_5_custom]' do
+      expect(debian_7_5_custom_run).to create_mariadb_service('debian_7_5_custom').with(
+        :version => '10.1',
         :port => '3308',
         :data_dir => '/data'
         )
     end
 
     it 'steps into mariadb_service and installs package[debconf-utils]' do
-      expect(debian_7_2_custom_run).to install_package('debconf-utils')
+      expect(debian_7_5_custom_run).to install_package('debconf-utils')
     end
 
     it 'steps into mariadb_service and creates directory[/var/cache/local/preseeding]' do
-      expect(debian_7_2_custom_run).to create_directory('/var/cache/local/preseeding').with(
+      expect(debian_7_5_custom_run).to create_directory('/var/cache/local/preseeding').with(
         :owner => 'root',
         :group => 'root',
         :mode => '0755',
@@ -63,7 +63,7 @@ GRANT ALL PRIVILEGES ON *.* TO 'root'@'1.2.3.4/5' IDENTIFIED BY 'YUNOSETPASSWORD
     end
 
     it 'steps into mariadb_service and creates template[/var/cache/local/preseeding/mariadb-server.seed]' do
-      expect(debian_7_2_custom_run).to create_template('/var/cache/local/preseeding/mariadb-server.seed').with(
+      expect(debian_7_5_custom_run).to create_template('/var/cache/local/preseeding/mariadb-server.seed').with(
         :owner => 'root',
         :group => 'root',
         :mode => '0600'
@@ -71,75 +71,75 @@ GRANT ALL PRIVILEGES ON *.* TO 'root'@'1.2.3.4/5' IDENTIFIED BY 'YUNOSETPASSWORD
     end
 
     it 'steps into mariadb_service and creates execute[preseed mariadb-server]' do
-      expect(debian_7_2_custom_run).to_not run_execute('preseed mariadb-server').with(
+      expect(debian_7_5_custom_run).to_not run_execute('preseed mariadb-server').with(
         :command => '/usr/bin/debconf-set-selections /var/cache/local/preseeding/mariadb-server.seed'
         )
     end
 
-    it 'steps into mariadb_service and installs package[mariadb-server-5.5]' do
-      expect(debian_7_2_custom_run).to install_package('mariadb-server-5.5')
+    it 'steps into mariadb_service and installs package[mariadb-server-10.1]' do
+      expect(debian_7_5_custom_run).to install_package('mariadb-server-10.1')
     end
 
-    it 'steps into mariadb_service and creates service[mariadb]' do
-      expect(debian_7_2_custom_run).to start_service('mariadb')
-      expect(debian_7_2_custom_run).to enable_service('mariadb')
+    it 'steps into mariadb_service and creates service[mysql]' do
+      expect(debian_7_5_custom_run).to start_service('mysql')
+      expect(debian_7_5_custom_run).to enable_service('mysql')
     end
 
-    it 'steps into mariadb_service and creates directory[/etc/mariadb/conf.d]' do
-      expect(debian_7_2_custom_run).to create_directory('/etc/mariadb/conf.d').with(
-        :owner => 'mariadb',
-        :group => 'mariadb',
+    it 'steps into mariadb_service and creates directory[/etc/mysql/conf.d]' do
+      expect(debian_7_5_custom_run).to create_directory('/etc/mysql/conf.d').with(
+        :owner => 'mysql',
+        :group => 'mysql',
         :mode => '0750',
         :recursive => true
         )
     end
 
-    it 'steps into mariadb_service and creates directory[/var/run/mariadbd]' do
-      expect(debian_7_2_custom_run).to create_directory('/var/run/mariadbd').with(
-        :owner => 'mariadb',
-        :group => 'mariadb',
+    it 'steps into mariadb_service and creates directory[/var/run/mysqld]' do
+      expect(debian_7_5_custom_run).to create_directory('/var/run/mysqld').with(
+        :owner => 'mysql',
+        :group => 'mysql',
         :mode => '0755',
         :recursive => true
         )
     end
 
     it 'steps into mariadb_service and creates directory[/data]' do
-      expect(debian_7_2_custom_run).to create_directory('/data').with(
-        :owner => 'mariadb',
-        :group => 'mariadb',
+      expect(debian_7_5_custom_run).to create_directory('/data').with(
+        :owner => 'mysql',
+        :group => 'mysql',
         :mode => '0750',
         :recursive => true
         )
     end
 
     it 'steps into mariadb_service and creates execute[assign-root-password]' do
-      expect(debian_7_2_custom_run).to run_execute('assign-root-password').with(
-        :command => '/usr/bin/mariadbadmin -u root password YUNOSETPASSWORD'
+      expect(debian_7_5_custom_run).to run_execute('assign-root-password').with(
+        :command => '/usr/bin/mysqladmin -u root password YUNOSETPASSWORD'
         )
     end
 
-    it 'steps into mariadb_service and creates template[/etc/mariadb_grants.sql]' do
-      expect(debian_7_2_custom_run).to create_template('/etc/mariadb_grants.sql').with(
+    it 'steps into mariadb_service and creates template[/etc/mysql_grants.sql]' do
+      expect(debian_7_5_custom_run).to create_template('/etc/mysql_grants.sql').with(
         :owner => 'root',
         :group => 'root',
         :mode => '0600'
         )
     end
 
-    it 'steps into mariadb_service and renders file[/etc/mariadb_grants.sql]' do
-      expect(debian_7_2_custom_run).to render_file('/etc/mariadb_grants.sql').with_content(
-        grants_sql_content_custom_debian_7_2
+    it 'steps into mariadb_service and renders file[/etc/mysql_grants.sql]' do
+      expect(debian_7_5_custom_run).to render_file('/etc/mysql_grants.sql').with_content(
+        grants_sql_content_custom_debian_7_5
         )
     end
 
     it 'steps into mariadb_service and creates execute[install-grants]' do
-      expect(debian_7_2_custom_run).to_not run_execute('install-grants').with(
-        :command => '/usr/bin/mariadb -u root -pYUNOSETPASSWORD < /etc/mariadb_grants.sql'
+      expect(debian_7_5_custom_run).to_not run_execute('install-grants').with(
+        :command => '/usr/bin/mysql -u root -pYUNOSETPASSWORD < /etc/mysql_grants.sql'
         )
     end
 
-    it 'steps into mariadb_service and creates template[/etc/mariadb/debian.cnf]' do
-      expect(debian_7_2_custom_run).to create_template('/etc/mariadb/debian.cnf').with(
+    it 'steps into mariadb_service and creates template[/etc/mysql/debian.cnf]' do
+      expect(debian_7_5_custom_run).to create_template('/etc/mysql/debian.cnf').with(
         :cookbook => 'mariadb',
         :source => 'debian/debian.cnf.erb',
         :owner => 'root',
@@ -148,36 +148,36 @@ GRANT ALL PRIVILEGES ON *.* TO 'root'@'1.2.3.4/5' IDENTIFIED BY 'YUNOSETPASSWORD
         )
     end
 
-    it 'steps into mariadb_service and creates template[/etc/mariadb/my.cnf]' do
-      expect(debian_7_2_custom_run).to create_template('/etc/mariadb/my.cnf').with(
-        :owner => 'mariadb',
-        :group => 'mariadb',
+    it 'steps into mariadb_service and creates template[/etc/mysql/my.cnf]' do
+      expect(debian_7_5_custom_run).to create_template('/etc/mysql/my.cnf').with(
+        :owner => 'mysql',
+        :group => 'mysql',
         :mode => '0600'
         )
     end
 
-    it 'steps into mariadb_service and renders file[/etc/mariadb/my.cnf]' do
-      expect(debian_7_2_custom_run).to render_file('/etc/mariadb/my.cnf').with_content(
-        my_cnf_5_5_content_custom_debian_7_2
+    it 'steps into mariadb_service and renders file[/etc/mysql/my.cnf]' do
+      expect(debian_7_5_custom_run).to render_file('/etc/mysql/my.cnf').with_content(
+        my_cnf_10_1_content_custom_debian_7_5
         )
     end
 
-    it 'steps into mariadb_service and renders file[/etc/mariadb/my.cnf]' do
-      expect(debian_7_2_custom_run).to render_file('/etc/mariadb/my.cnf').with_content(
-        my_cnf_5_5_content_custom_debian_7_2
+    it 'steps into mariadb_service and renders file[/etc/mysql/my.cnf]' do
+      expect(debian_7_5_custom_run).to render_file('/etc/mysql/my.cnf').with_content(
+        my_cnf_10_1_content_custom_debian_7_5
         )
     end
 
     it 'steps into mariadb_service and creates bash[move mariadb data to datadir]' do
-      expect(debian_7_2_custom_run).to_not run_bash('move mariadb data to datadir')
+      expect(debian_7_5_custom_run).to_not run_bash('move mariadb data to datadir')
     end
 
     it 'steps into mariadb_service and writes log[notify restart]' do
-      expect(debian_7_2_custom_run).to write_log('notify restart')
+      expect(debian_7_5_custom_run).to write_log('notify restart')
     end
 
     it 'steps into mariadb_service and writes log[notify reload]' do
-      expect(debian_7_2_custom_run).to write_log('notify reload')
+      expect(debian_7_5_custom_run).to write_log('notify reload')
     end
   end
 end

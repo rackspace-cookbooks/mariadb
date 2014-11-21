@@ -1,5 +1,4 @@
 require 'chef/provider/lwrp_base'
-require 'chef/dsl/include_recipe'
 require 'shellwords'
 require_relative 'helpers'
 require_relative 'helpers_ubuntu'
@@ -182,7 +181,7 @@ class Chef
           bash 'move mariadb data to datadir' do
             user 'root'
             code <<-EOH
-              service mysqld stop \
+              service mysql stop \
               && mv /var/lib/mysql/* #{new_resource.parsed_data_dir}
               EOH
             action :nothing

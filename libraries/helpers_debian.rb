@@ -2,12 +2,12 @@ module MariadbCookbook
   module Helpers
     module Debian
       def include_dir
-        include_dir = '/etc/mariadb/conf.d'
+        include_dir = '/etc/mysql/conf.d'
         include_dir
       end
 
       def pid_file
-        pid_file = '/var/run/mariadbd/mariadb.pid'
+        pid_file = '/var/run/mysqld/mysql.pid'
         pid_file
       end
 
@@ -17,7 +17,7 @@ module MariadbCookbook
       end
 
       def run_dir
-        run_dir = '/var/run/mariadbd'
+        run_dir = '/var/run/mysqld'
         run_dir
       end
 
@@ -28,7 +28,7 @@ module MariadbCookbook
           pass_string = '-p' + Shellwords.escape(new_resource.parsed_server_root_password)
         end
 
-        pass_string = '-p' + ::File.open('/etc/.mariadb_root').read.chomp if ::File.exist?('/etc/.mariadb_root')
+        pass_string = '-p' + ::File.open('/etc/.mysql_root').read.chomp if ::File.exist?('/etc/.mysql_root')
         pass_string
       end
 

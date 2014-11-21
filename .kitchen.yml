@@ -19,7 +19,11 @@ platforms:
   - name: fedora-20
     run_list:
       - recipe[mariadb::repo]
-  - name: debian-7.7
+  - name: debian-jessie
+    run_list:
+      - recipe[mariadb::repo]
+      - recipe[apt]
+  - name: debian-7.5
     run_list:
       - recipe[mariadb::repo]
       - recipe[apt]

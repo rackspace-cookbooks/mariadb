@@ -15,7 +15,7 @@ describe 'mariadb_test_default::server on debian-jessie' do
       expect(debian_jessie_default_run).to create_mariadb_service('debian_jessie_default').with(
         :parsed_version => '5.5',
         :parsed_port => '3306',
-        :parsed_data_dir => '/var/lib/mariadb'
+        :parsed_data_dir => '/var/lib/mysql'
         )
     end
   end
