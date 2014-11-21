@@ -13,9 +13,6 @@ platforms:
 #  - name: centos-7.0
 #    run_list:
 #      - recipe[mariadb::repo]
-  - name: fedora-19
-    run_list:
-      - recipe[mariadb::repo]
   - name: fedora-20
     run_list:
       - recipe[mariadb::repo]
