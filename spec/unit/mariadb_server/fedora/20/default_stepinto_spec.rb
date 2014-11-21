@@ -55,8 +55,8 @@ SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('ilikerandompasswords');"
         )
     end
 
-    it 'steps into mariadb_service and installs package[MariaDB-server]' do
-      expect(fedora_20_default_run).to install_package('MariaDB-server')
+    it 'steps into mariadb_service and installs package[MariaDB]' do
+      expect(fedora_20_default_run).to install_package('MariaDB')
     end
 
     it 'steps into mariadb_service and creates directory[/etc/my.cnf.d]' do
@@ -101,8 +101,8 @@ SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('ilikerandompasswords');"
     end
 
     it 'steps into mariadb_service and creates service[mysql]' do
-      expect(fedora_20_default_run).to start_service('mysqld')
-      expect(fedora_20_default_run).to enable_service('mysqld')
+      expect(fedora_20_default_run).to start_service('mysql')
+      expect(fedora_20_default_run).to enable_service('mysql')
     end
 
     it 'steps into mariadb_service and runs execute[wait for mysql]' do

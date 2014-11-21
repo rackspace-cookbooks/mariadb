@@ -47,8 +47,8 @@ GRANT ALL PRIVILEGES ON *.* TO 'root'@'1.2.3.4/5' IDENTIFIED BY 'YUNOSETPASSWORD
         )
     end
 
-    it 'steps into mariadb_service and installs package[MariaDB-server]' do
-      expect(fedora_20_custom_run).to install_package('MariaDB-server')
+    it 'steps into mariadb_service and installs package[MariaDB]' do
+      expect(fedora_20_custom_run).to install_package('MariaDB')
     end
 
     it 'steps into mariadb_service and creates directory[/etc/my.cnf.d]' do
@@ -92,9 +92,9 @@ GRANT ALL PRIVILEGES ON *.* TO 'root'@'1.2.3.4/5' IDENTIFIED BY 'YUNOSETPASSWORD
         )
     end
 
-    it 'steps into mariadb_service and creates service[mysqld]' do
-      expect(fedora_20_custom_run).to start_service('mysqld')
-      expect(fedora_20_custom_run).to enable_service('mysqld')
+    it 'steps into mariadb_service and creates service[mysql]' do
+      expect(fedora_20_custom_run).to start_service('mysql')
+      expect(fedora_20_custom_run).to enable_service('mysql')
     end
 
     it 'steps into mariadb_service and runs execute[wait for mysql]' do
@@ -172,8 +172,8 @@ GRANT ALL PRIVILEGES ON *.* TO 'root'@'1.2.3.4/5' IDENTIFIED BY 'YUNOSETPASSWORD
         )
     end
 
-    it 'steps into mariadb_service and installs package[MariaDB-server]' do
-      expect(fedora_20_custom_run).to install_package('MariaDB-server').with(:version => package_version)
+    it 'steps into mariadb_service and installs package[MariaDB]' do
+      expect(fedora_20_custom_run).to install_package('MariaDB')
     end
   end
 
@@ -209,8 +209,8 @@ GRANT ALL PRIVILEGES ON *.* TO 'root'@'1.2.3.4/5' IDENTIFIED BY 'YUNOSETPASSWORD
         )
     end
 
-    it 'steps into mariadb_service and upgrades package[MariaDB-server]' do
-      expect(fedora_20_custom_run).to upgrade_package('MariaDB-server')
+    it 'steps into mariadb_service and upgrades package[MariaDB]' do
+      expect(fedora_20_custom_run).to upgrade_package('MariaDB')
     end
   end
 end
