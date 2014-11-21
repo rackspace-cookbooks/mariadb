@@ -32,11 +32,11 @@ datadir                        = /var/lib/mysql
   end
 
   let(:grants_sql_content_default_ubuntu_14_04) do
-    "DELETE FROM mariadb.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
-UPDATE mariadb.user SET Password=PASSWORD('ilikerandompasswords') WHERE User='root';
-DELETE FROM mariadb.user WHERE User='';
+    "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
+UPDATE mysql.user SET Password=PASSWORD('ilikerandompasswords') WHERE User='root';
+DELETE FROM mysql.user WHERE User='';
 DROP DATABASE IF EXISTS test;
-DELETE FROM mariadb.db WHERE Db='test' OR Db='test\\_%';
+DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
 SET PASSWORD FOR 'root'@'localhost' = PASSWORD('ilikerandompasswords');
 SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('ilikerandompasswords');"
   end

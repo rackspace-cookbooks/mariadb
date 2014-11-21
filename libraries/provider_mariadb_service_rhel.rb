@@ -51,7 +51,7 @@ class Chef
             action :create
           end
 
-          service 'mysqld' do
+          service 'mysql' do
             supports :restart => true
             action [:start, :enable]
           end
@@ -105,7 +105,7 @@ class Chef
               )
             action :create
             notifies :run, 'bash[move mariadb data to datadir]'
-            notifies :restart, 'service[mysqld]'
+            notifies :restart, 'service[mysql]'
           end
 
           bash 'move mariadb data to datadir' do
@@ -142,14 +142,14 @@ class Chef
         end
 
         action :restart do
-          service 'mysqld' do
+          service 'mysql' do
             supports :restart => true
             action :restart
           end
         end
 
         action :reload do
-          service 'mysqld' do
+          service 'mysql' do
             action :reload
           end
         end
