@@ -5,7 +5,7 @@ class Chef
     class MariadbClient
       class Rhel < Chef::Provider::MariadbClient
         def packages
-          %w(mariadb mariadb-devel)
+          %w(MariaDB-client MariaDB-devel)
         end
       end
     end
