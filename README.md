@@ -1,7 +1,7 @@
-MySQL cookbook
+MariaDB cookbook
 =====================
 
-The MySQL cookbook exposes the `mariadb_service` and `mariadb_client`
+The MariaDB cookbook exposes the `mariadb_service` and `mariadb_client`
 resources. These resources are utilized by the `mariadb::client`
 and `mariadb::server` recipes, or can be consumed in other recipes by
 depending on the MySQL cookbook.
