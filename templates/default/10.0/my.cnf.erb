@@ -2,7 +2,7 @@
 <% if @port %>
 port                           = <%= @port %>
 <% end %>
-<% if @socket %>
+<% if @socket_file %>
 socket                         = <%= @socket_file %>
 <% end %>
 <% if @enable_utf8 %>
@@ -21,9 +21,6 @@ pid-file                       = <%= @pid_file %>
 socket                         = <%= @socket_file %>
 <% if @port %>
 port                           = <%= @port %>
-<% end %>
-<% if @basedir %>
-basedir                        = <%= @base_dir %>
 <% end %>
 <% if @data_dir %>
 datadir                        = <%= @data_dir %>

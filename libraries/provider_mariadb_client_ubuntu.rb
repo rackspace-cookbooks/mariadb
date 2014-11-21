@@ -5,7 +5,7 @@ class Chef
     class MariadbClient
       class Ubuntu < Chef::Provider::MariadbClient
         def packages
-          %w(mariadb-client-5.5 libmariadbclient-dev)
+          %w(mariadb-client libmariadbclient-dev)
         end
       end
     end

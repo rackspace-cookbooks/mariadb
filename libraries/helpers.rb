@@ -44,6 +44,28 @@ module Opscode
       def self.mariadb_info
         @mariadb_info ||= {
           'rhel' => {
+            '2013.09' => {
+              '5.5' => {
+                'package_name' => 'MariaDB-server'
+              },
+              '10.0' => {
+                'package_name' => 'MariaDB-server'
+              },
+              '10.1' => {
+                'package_name' => 'MariaDB-server'
+              }
+            },
+            '2014.03' => {
+              '5.5' => {
+                'package_name' => 'MariaDB-server'
+              },
+              '10.0' => {
+                'package_name' => 'MariaDB-server'
+              },
+              '10.1' => {
+                'package_name' => 'MariaDB-server'
+              }
+            },
             '6' => {
               '5.5' => {
                 'package_name' => 'MariaDB-server'

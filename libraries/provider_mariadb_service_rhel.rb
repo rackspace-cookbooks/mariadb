@@ -27,7 +27,7 @@ class Chef
             # version new_resource.parsed_package_version
           end
 
-          directory include_dir do
+          directory '/etc/mysql/conf.d' do
             owner 'mysql'
             group 'mysql'
             mode '0750'
@@ -35,7 +35,7 @@ class Chef
             action :create
           end
 
-          directory run_dir do
+          directory '/var/run/mysqld' do
             owner 'mysql'
             group 'mysql'
             mode '0755'
@@ -51,7 +51,7 @@ class Chef
             action :create
           end
 
-          service 'mysql' do
+          service 'mysqld' do
             supports :restart => true
             action [:start, :enable]
           end
@@ -76,7 +76,7 @@ class Chef
 
           execute 'install-grants' do
             sensitive true if sensitive_supported?
-            cmd = "#{prefix_dir}/bin/mysql"
+            cmd = '/usr/bin/mysql'
             cmd << ' -u root '
             cmd << "#{pass_string} < /etc/mysql_grants.sql"
             command cmd
@@ -84,7 +84,7 @@ class Chef
             notifies :run, 'execute[create root marker]'
           end
 
-          template "#{base_dir}/etc/my.cnf" do
+          template '/etc/my.cnf' do
             if new_resource.parsed_template_source.nil?
               source "#{new_resource.parsed_version}/my.cnf.erb"
               cookbook 'mariadb'
@@ -95,25 +95,24 @@ class Chef
             group 'mysql'
             mode '0600'
             variables(
-              :base_dir => base_dir,
               :data_dir => new_resource.parsed_data_dir,
-              :include_dir => include_dir,
               :lc_messages_dir => lc_messages_dir,
               :pid_file => pid_file,
               :port => new_resource.parsed_port,
               :socket_file => socket_file,
-              :enable_utf8 => new_resource.parsed_enable_utf8
+              :enable_utf8 => new_resource.parsed_enable_utf8,
+              :include_dir => '/etc/mysql/conf.d'
               )
             action :create
             notifies :run, 'bash[move mariadb data to datadir]'
-            notifies :restart, 'service[mysql]'
+            notifies :restart, 'service[mysqld]'
           end
 
           bash 'move mariadb data to datadir' do
             user 'root'
             code <<-EOH
-              service #{service_name} stop \
-              && for i in `ls #{base_dir}/var/lib/mysql | grep -v mysql.sock` ; do mv #{base_dir}/var/lib/mysql/$i #{new_resource.parsed_data_dir} ; done
+              service mysqld stop \
+              && for i in `ls /var/lib/mysql | grep -v mysql.sock` ; do mv /var/lib/mysql/$i #{new_resource.parsed_data_dir} ; done
               EOH
             action :nothing
             creates "#{new_resource.parsed_data_dir}/ibdata1"
@@ -123,12 +122,12 @@ class Chef
 
           execute 'assign-root-password' do
             sensitive true if sensitive_supported?
-            cmd = "#{prefix_dir}/bin/mysqladmin"
+            cmd = '/usr/bin/mysqladmin'
             cmd << ' -u root password '
             cmd << Shellwords.escape(new_resource.parsed_server_root_password)
             command cmd
             action :run
-            only_if "#{prefix_dir}/bin/mysql -u root -e 'show databases;'"
+            only_if '/usr/bin/mysql -u root -e \'show databases;\''
           end
 
           execute 'create root marker' do
@@ -143,14 +142,14 @@ class Chef
         end
 
         action :restart do
-          service 'mysql' do
+          service 'mysqld' do
             supports :restart => true
             action :restart
           end
         end
 
         action :reload do
-          service 'mysql' do
+          service 'mysqld' do
             action :reload
           end
         end
