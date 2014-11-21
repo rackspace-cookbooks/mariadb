@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'stepped into mariadb_test_custom::server on debian-7.5' do
   let(:debian_7_5_custom_run) do
-    ChefSpec::Runner.new(
+    ChefSpec::SoloRunner.new(
       :step_into => 'mariadb_service',
       :platform => 'debian',
       :version => '7.5'

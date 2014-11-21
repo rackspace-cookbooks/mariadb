@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'mariadb_test_default::server on debian-jessie' do
   let(:debian_jessie_default_run) do
-    ChefSpec::Runner.new(
+    ChefSpec::SoloRunner.new(
       :platform => 'debian',
       :version => 'jessie/sid'
       ) do |node|

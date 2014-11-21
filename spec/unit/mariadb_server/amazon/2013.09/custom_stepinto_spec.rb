@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'stepped into mariadb_test_custom::server on amazon-2013.09' do
   let(:amazon_2013_09_custom_run) do
-    ChefSpec::Runner.new(
+    ChefSpec::SoloRunner.new(
       :step_into => 'mariadb_service',
       :platform => 'amazon',
       :version => '2013.09'
@@ -92,9 +92,9 @@ GRANT ALL PRIVILEGES ON *.* TO 'root'@'1.2.3.4/5' IDENTIFIED BY 'YUNOSETPASSWORD
         )
     end
 
-    it 'steps into mariadb_service and creates service[mysqld]' do
-      expect(amazon_2013_09_custom_run).to start_service('mysqld')
-      expect(amazon_2013_09_custom_run).to enable_service('mysqld')
+    it 'steps into mariadb_service and creates service[mysql]' do
+      expect(amazon_2013_09_custom_run).to start_service('mysql')
+      expect(amazon_2013_09_custom_run).to enable_service('mysql')
     end
 
     it 'steps into mariadb_service and runs execute[wait for mariadb]' do

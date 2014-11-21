@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'mariadb_client_test::default' do
   let(:mariadb_client_run) do
-    ChefSpec::Runner.new.converge('mariadb_client_test::default')
+    ChefSpec::SoloRunner.new.converge('mariadb_client_test::default')
   end
 
   context 'when using default parameters' do

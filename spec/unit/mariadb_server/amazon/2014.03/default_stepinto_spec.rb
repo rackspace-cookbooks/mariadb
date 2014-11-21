@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'stepped into mariadb_test_default::server on amazon-2014.03' do
   let(:amazon_2014_03_default_run) do
-    ChefSpec::Runner.new(
+    ChefSpec::SoloRunner.new(
       :step_into => 'mariadb_service',
       :platform => 'amazon',
       :version => '2014.03'
@@ -105,9 +105,9 @@ SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('ilikerandompasswords');"
       expect(amazon_2014_03_default_run).to_not run_bash('move mariadb data to datadir')
     end
 
-    it 'steps into mariadb_service and creates service[mysqld]' do
-      expect(amazon_2014_03_default_run).to start_service('mysqld')
-      expect(amazon_2014_03_default_run).to enable_service('mysqld')
+    it 'steps into mariadb_service and creates service[mysql]' do
+      expect(amazon_2014_03_default_run).to start_service('mysql')
+      expect(amazon_2014_03_default_run).to enable_service('mysql')
     end
 
     it 'steps into mariadb_service and runs execute[wait for mariadb]' do

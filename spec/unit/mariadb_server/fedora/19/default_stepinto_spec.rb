@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'stepped into mariadb_test_default::server on fedora-19' do
   let(:fedora_19_default_run) do
-    ChefSpec::Runner.new(
+    ChefSpec::SoloRunner.new(
       :step_into => 'mariadb_service',
       :platform => 'fedora',
       :version => '19'

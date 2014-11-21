@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'mariadb_test_default::mariadb_service_attribues on fedora-20' do
   let(:fedora_20_default_run) do
-    ChefSpec::Runner.new(
+    ChefSpec::SoloRunner.new(
       :platform => 'fedora',
       :version => '20'
       ) do |node|

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'mariadb_test_default::server on amazon-2014.03' do
   let(:amazon_2014_03_default_run) do
-    ChefSpec::Runner.new(
+    ChefSpec::SoloRunner.new(
       :platform => 'amazon',
       :version => '2014.03'
       ) do |node|

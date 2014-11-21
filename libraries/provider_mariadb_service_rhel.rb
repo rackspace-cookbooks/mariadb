@@ -111,7 +111,7 @@ class Chef
           bash 'move mariadb data to datadir' do
             user 'root'
             code <<-EOH
-              service mysqld stop \
+              service mysql stop \
               && for i in `ls /var/lib/mysql | grep -v mysql.sock` ; do mv /var/lib/mysql/$i #{new_resource.parsed_data_dir} ; done
               EOH
             action :nothing

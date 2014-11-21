@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'stepped into mariadb_test_custom::server on fedora-19' do
   let(:fedora_19_custom_run) do
-    ChefSpec::Runner.new(
+    ChefSpec::SoloRunner.new(
       :step_into => 'mariadb_service',
       :platform => 'fedora',
       :version => '19'
@@ -143,7 +143,7 @@ GRANT ALL PRIVILEGES ON *.* TO 'root'@'1.2.3.4/5' IDENTIFIED BY 'YUNOSETPASSWORD
   context 'when using non-default package_version parameter' do
     let(:package_version) { '10.1' }
     let(:fedora_19_custom_run) do
-      ChefSpec::Runner.new(
+      ChefSpec::SoloRunner.new(
         :step_into => 'mariadb_service',
         :platform => 'fedora',
         :version => '19'
@@ -180,7 +180,7 @@ GRANT ALL PRIVILEGES ON *.* TO 'root'@'1.2.3.4/5' IDENTIFIED BY 'YUNOSETPASSWORD
   context 'when using non-default package_action parameter' do
     let(:package_action) { 'upgrade' }
     let(:fedora_19_custom_run) do
-      ChefSpec::Runner.new(
+      ChefSpec::SoloRunner.new(
         :step_into => 'mariadb_service',
         :platform => 'fedora',
         :version => '19'
