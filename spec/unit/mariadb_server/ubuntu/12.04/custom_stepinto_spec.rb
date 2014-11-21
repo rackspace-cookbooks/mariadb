@@ -7,6 +7,7 @@ describe 'stepped into mariadb_test_custom::server on ubuntu-12.04' do
       :platform => 'ubuntu',
       :version => '12.04'
       ) do |node|
+      node.set['mariadb']['version'] = '5.5'
       node.set['mariadb']['service_name'] = 'ubuntu_12_04_default'
       node.set['mariadb']['port'] = '3308'
       node.set['mariadb']['data_dir'] = '/data'
@@ -107,13 +108,13 @@ GRANT ALL PRIVILEGES ON *.* TO 'root'@'1.2.3.4/5' IDENTIFIED BY 'YUNOSETPASSWORD
         )
     end
 
-    it 'steps into mariadb_service and creates service[apparmor-mysqld]' do
-      expect(ubuntu_12_04_custom_run).to_not start_service('apparmor-mysqld')
+    it 'steps into mariadb_service and creates service[apparmor-mysql]' do
+      expect(ubuntu_12_04_custom_run).to_not start_service('apparmor-mysql')
     end
 
-    it 'steps into mariadb_service and creates service[mariadb]' do
-      expect(ubuntu_12_04_custom_run).to start_service('apparmor-mysqld')
-      expect(ubuntu_12_04_custom_run).to enable_service('apparmor-mysqld')
+    it 'steps into mariadb_service and creates service[mysql]' do
+      expect(ubuntu_12_04_custom_run).to start_service('mysql')
+      expect(ubuntu_12_04_custom_run).to enable_service('mysql')
     end
 
     it 'steps into mariadb_service and creates directory[/etc/mysql/conf.d]' do

@@ -62,7 +62,7 @@ class Chef
           service 'mysql' do
             provider Chef::Provider::Service::Init
             supports :restart => true, :start => true, :stop => true
-            action [:start]
+            action [:start, :enable]
           end
 
           execute 'assign-root-password' do
