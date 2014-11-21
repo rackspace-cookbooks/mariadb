@@ -51,12 +51,12 @@ class Chef
             recursive true
           end
 
-          service 'mysql' do
+          service 'mysqld' do
             supports :restart => true
             action [:start, :enable]
           end
 
-          execute 'wait for mariadb' do
+          execute 'wait for mysql' do
             command "until [ -S #{socket_file} ] ; do sleep 1 ; done"
             timeout 10
             action :run
@@ -106,14 +106,14 @@ class Chef
               )
             action :create
             notifies :run, 'bash[move mariadb data to datadir]'
-            notifies :restart, 'service[mysql]'
+            notifies :restart, 'service[mysqld]'
           end
 
           bash 'move mariadb data to datadir' do
             user 'root'
             code <<-EOH
-              service mariadbd stop \
-              && for i in `ls /var/lib/mysql | grep -v mysqld.sock` ; do mv /var/lib/mariadb/$i #{new_resource.parsed_data_dir} ; done
+              service mysqld stop \
+              && for i in `ls /var/lib/mysql | grep -v mysqld.sock` ; do mv /var/lib/mysql/$i #{new_resource.parsed_data_dir} ; done
               EOH
             action :nothing
             creates "#{new_resource.parsed_data_dir}/ibdata1"
@@ -144,14 +144,14 @@ class Chef
       end
 
       action :restart do
-        service 'mysql' do
+        service 'mysqld' do
           supports :restart => true
           action :restart
         end
       end
 
       action :reload do
-        service 'mysql' do
+        service 'mysqld' do
           action :reload
         end
       end
