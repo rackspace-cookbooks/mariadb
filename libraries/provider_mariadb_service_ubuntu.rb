@@ -59,8 +59,8 @@ class Chef
 
           # service
           service 'mysql' do
-            provider Chef::Provider::Service::Init
-            supports :restart => true, :start => true, :stop => true
+            provider Chef::Provider::Service::Init::Debian
+            supports :restart => true, :start => true, :stop => true, :enable => true
             action [:start, :enable]
           end
 
