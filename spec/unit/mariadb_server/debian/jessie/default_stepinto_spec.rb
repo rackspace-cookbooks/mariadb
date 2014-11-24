@@ -3,9 +3,9 @@ require 'spec_helper'
 describe 'stepped into mariadb_test_default::server on debian-jessie' do
   let(:debian_jessie_default_run) do
     ChefSpec::SoloRunner.new(
-      :step_into => 'mariadb_service',
-      :platform => 'debian',
-      :version => 'jessie/sid'
+      step_into: 'mariadb_service',
+      platform: 'debian',
+      version: 'jessie/sid'
       ) do |node|
       node.set['mariadb']['service_name'] = 'debian_jessie_default'
     end.converge('mariadb_test_default::server')
@@ -49,9 +49,9 @@ SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('ilikerandompasswords');"
   context 'when using default parameters' do
     it 'creates mariadb_service[debian_jessie_default]' do
       expect(debian_jessie_default_run).to create_mariadb_service('debian_jessie_default').with(
-        :parsed_version => '5.5',
-        :parsed_port => '3306',
-        :parsed_data_dir => '/var/lib/mysql'
+        parsed_version: '5.5',
+        parsed_port: '3306',
+        parsed_data_dir: '/var/lib/mysql'
         )
     end
 
@@ -61,25 +61,25 @@ SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('ilikerandompasswords');"
 
     it 'steps into mariadb_service and creates directory[/var/cache/local/preseeding]' do
       expect(debian_jessie_default_run).to create_directory('/var/cache/local/preseeding').with(
-        :owner => 'root',
-        :group => 'root',
-        :mode => '0755',
-        :recursive => true
+        owner: 'root',
+        group: 'root',
+        mode: '0755',
+        recursive: true
         )
     end
 
     it 'steps into mariadb_service and creates template[/var/cache/local/preseeding/mariadb-server.seed]' do
       expect(debian_jessie_default_run).to create_template('/var/cache/local/preseeding/mariadb-server.seed').with(
-        :cookbook => 'mariadb',
-        :owner => 'root',
-        :group => 'root',
-        :mode => '0600'
+        cookbook: 'mariadb',
+        owner: 'root',
+        group: 'root',
+        mode: '0600'
         )
     end
 
     it 'steps into mariadb_service and creates execute[preseed mariadb-server]' do
       expect(debian_jessie_default_run).to_not run_execute('preseed mariadb-server').with(
-        :command => '/usr/bin/debconf-set-selections /var/cache/local/preseeding/mariadb-server.seed'
+        command: '/usr/bin/debconf-set-selections /var/cache/local/preseeding/mariadb-server.seed'
         )
     end
 
@@ -94,43 +94,43 @@ SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('ilikerandompasswords');"
 
     it 'steps into mariadb_service and creates directory[/etc/mysql/conf.d]' do
       expect(debian_jessie_default_run).to create_directory('/etc/mysql/conf.d').with(
-        :owner => 'mysql',
-        :group => 'mysql',
-        :mode => '0750',
-        :recursive => true
+        owner: 'mysql',
+        group: 'mysql',
+        mode: '0750',
+        recursive: true
         )
     end
 
     it 'steps into mariadb_service and creates directory[/var/run/mysqld]' do
       expect(debian_jessie_default_run).to create_directory('/var/run/mysqld').with(
-        :owner => 'mysql',
-        :group => 'mysql',
-        :mode => '0755',
-        :recursive => true
+        owner: 'mysql',
+        group: 'mysql',
+        mode: '0755',
+        recursive: true
         )
     end
 
     it 'steps into mariadb_service and creates directory[/var/lib/mysql]' do
       expect(debian_jessie_default_run).to create_directory('/var/lib/mysql').with(
-        :owner => 'mysql',
-        :group => 'mysql',
-        :mode => '0750',
-        :recursive => true
+        owner: 'mysql',
+        group: 'mysql',
+        mode: '0750',
+        recursive: true
         )
     end
 
     it 'steps into mariadb_service and creates execute[assign-root-password]' do
       expect(debian_jessie_default_run).to run_execute('assign-root-password').with(
-        :command => '/usr/bin/mysqladmin -u root password ilikerandompasswords'
+        command: '/usr/bin/mysqladmin -u root password ilikerandompasswords'
         )
     end
 
     it 'steps into mariadb_service and creates template[/etc/mysql_grants.sql]' do
       expect(debian_jessie_default_run).to create_template('/etc/mysql_grants.sql').with(
-        :cookbook => 'mariadb',
-        :owner => 'root',
-        :group => 'root',
-        :mode => '0600'
+        cookbook: 'mariadb',
+        owner: 'root',
+        group: 'root',
+        mode: '0600'
         )
     end
 
@@ -142,26 +142,26 @@ SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('ilikerandompasswords');"
 
     it 'steps into mariadb_service and creates execute[install-grants]' do
       expect(debian_jessie_default_run).to_not run_execute('install-grants').with(
-        :command => '/usr/bin/mysql -u root -pilikerandompasswords < /etc/mysql_grants.sql'
+        command: '/usr/bin/mysql -u root -pilikerandompasswords < /etc/mysql_grants.sql'
         )
     end
 
     it 'steps into mariadb_service and creates template[/etc/mysql/debian.cnf]' do
       expect(debian_jessie_default_run).to create_template('/etc/mysql/debian.cnf').with(
-        :cookbook => 'mariadb',
-        :source => 'debian/debian.cnf.erb',
-        :owner => 'root',
-        :group => 'root',
-        :mode => '0600'
+        cookbook: 'mariadb',
+        source: 'debian/debian.cnf.erb',
+        owner: 'root',
+        group: 'root',
+        mode: '0600'
         )
     end
 
     it 'steps into mariadb_service and creates template[/etc/mysql/my.cnf]' do
       expect(debian_jessie_default_run).to create_template('/etc/mysql/my.cnf').with(
-        :cookbook => 'mariadb',
-        :owner => 'mysql',
-        :group => 'mysql',
-        :mode => '0600'
+        cookbook: 'mariadb',
+        owner: 'mysql',
+        group: 'mysql',
+        mode: '0600'
         )
     end
 

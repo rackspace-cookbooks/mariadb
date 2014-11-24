@@ -40,7 +40,7 @@ class Chef
             owner 'root'
             group 'root'
             mode '0600'
-            variables(:config => new_resource)
+            variables(config: new_resource)
             action :create
             notifies :run, 'execute[preseed mariadb-server]', :immediately
           end
@@ -59,7 +59,7 @@ class Chef
           # service
           service 'mysql' do
             provider Chef::Provider::Service::Init::Debian
-            supports :restart => true
+            supports restart: true
             action [:start, :enable]
           end
 
@@ -80,7 +80,7 @@ class Chef
             owner 'root'
             group 'root'
             mode '0600'
-            variables(:config => new_resource)
+            variables(config: new_resource)
             action :create
             notifies :run, 'execute[install-grants]'
           end
@@ -101,7 +101,7 @@ class Chef
             owner 'root'
             group 'root'
             mode '0600'
-            variables(:config => new_resource)
+            variables(config: new_resource)
             action :create
           end
 
@@ -141,12 +141,12 @@ class Chef
             group 'mysql'
             mode '0600'
             variables(
-              :data_dir => new_resource.parsed_data_dir,
-              :pid_file => pid_file,
-              :socket_file => socket_file,
-              :port => new_resource.parsed_port,
-              :include_dir => include_dir,
-              :enable_utf8 => new_resource.parsed_enable_utf8
+              data_dir: new_resource.parsed_data_dir,
+              pid_file: pid_file,
+              socket_file: socket_file,
+              port: new_resource.parsed_port,
+              include_dir: include_dir,
+              enable_utf8: new_resource.parsed_enable_utf8
               )
             action :create
             notifies :run, 'bash[move mariadb data to datadir]'
@@ -180,7 +180,7 @@ class Chef
       action :restart do
         service 'mysql' do
           provider Chef::Provider::Service::Init::Debian
-          supports :restart => true
+          supports restart: true
           action :restart
         end
       end

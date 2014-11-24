@@ -52,7 +52,7 @@ class Chef
           end
 
           service 'mysql' do
-            supports :restart => true
+            supports restart: true
             action [:start, :enable]
           end
 
@@ -69,7 +69,7 @@ class Chef
             owner 'root'
             group 'root'
             mode '0600'
-            variables(:config => new_resource)
+            variables(config: new_resource)
             action :create
             notifies :run, 'execute[install-grants]'
           end
@@ -95,13 +95,13 @@ class Chef
             group 'mysql'
             mode '0600'
             variables(
-              :data_dir => new_resource.parsed_data_dir,
-              :lc_messages_dir => lc_messages_dir,
-              :pid_file => pid_file,
-              :port => new_resource.parsed_port,
-              :socket_file => socket_file,
-              :enable_utf8 => new_resource.parsed_enable_utf8,
-              :include_dir => '/etc/mysql/conf.d'
+              data_dir: new_resource.parsed_data_dir,
+              lc_messages_dir: lc_messages_dir,
+              pid_file: pid_file,
+              port: new_resource.parsed_port,
+              socket_file: socket_file,
+              enable_utf8: new_resource.parsed_enable_utf8,
+              include_dir: '/etc/mysql/conf.d'
               )
             action :create
             notifies :run, 'bash[move mariadb data to datadir]'
@@ -143,7 +143,7 @@ class Chef
 
         action :restart do
           service 'mysql' do
-            supports :restart => true
+            supports restart: true
             action :restart
           end
         end

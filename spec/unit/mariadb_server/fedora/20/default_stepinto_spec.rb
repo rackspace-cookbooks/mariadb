@@ -3,9 +3,9 @@ require 'spec_helper'
 describe 'stepped into mariadb_test_default::server on fedora-20' do
   let(:fedora_20_default_run) do
     ChefSpec::SoloRunner.new(
-      :step_into => 'mariadb_service',
-      :platform => 'fedora',
-      :version => '20'
+      step_into: 'mariadb_service',
+      platform: 'fedora',
+      version: '20'
       ) do |node|
       node.set['mariadb']['service_name'] = 'fedora_20_default'
     end.converge('mariadb_test_default::server')
@@ -49,9 +49,9 @@ SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('ilikerandompasswords');"
   context 'when using default parameters' do
     it 'creates mariadb_service[fedora_20_default]' do
       expect(fedora_20_default_run).to create_mariadb_service('fedora_20_default').with(
-        :parsed_version => '10.0',
-        :parsed_port => '3306',
-        :parsed_data_dir => '/var/lib/mysql'
+        parsed_version: '10.0',
+        parsed_port: '3306',
+        parsed_data_dir: '/var/lib/mysql'
         )
     end
 
@@ -61,36 +61,36 @@ SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('ilikerandompasswords');"
 
     it 'steps into mariadb_service and creates directory[/etc/my.cnf.d]' do
       expect(fedora_20_default_run).to create_directory('/etc/my.cnf.d').with(
-        :owner => 'mysql',
-        :group => 'mysql',
-        :mode => '0750',
-        :recursive => true
+        owner: 'mysql',
+        group: 'mysql',
+        mode: '0750',
+        recursive: true
         )
     end
 
     it 'steps into mariadb_service and creates directory[/var/run/mysqld]' do
       expect(fedora_20_default_run).to create_directory('/var/run/mysqld').with(
-        :owner => 'mysql',
-        :group => 'mysql',
-        :mode => '0755',
-        :recursive => true
+        owner: 'mysql',
+        group: 'mysql',
+        mode: '0755',
+        recursive: true
         )
     end
 
     it 'steps into mariadb_service and creates directory[/var/lib/mysql]' do
       expect(fedora_20_default_run).to create_directory('/var/lib/mysql').with(
-        :owner => 'mysql',
-        :group => 'mysql',
-        :mode => '0755',
-        :recursive => true
+        owner: 'mysql',
+        group: 'mysql',
+        mode: '0755',
+        recursive: true
         )
     end
 
     it 'steps into mariadb_service and creates template[/etc/my.cnf]' do
       expect(fedora_20_default_run).to create_template('/etc/my.cnf').with(
-        :owner => 'mysql',
-        :group => 'mysql',
-        :mode => '0600'
+        owner: 'mysql',
+        group: 'mysql',
+        mode: '0600'
         )
     end
 
@@ -111,9 +111,9 @@ SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('ilikerandompasswords');"
 
     it 'steps into mariadb_service and creates template[/etc/mysql_grants.sql]' do
       expect(fedora_20_default_run).to create_template('/etc/mysql_grants.sql').with(
-        :owner => 'root',
-        :group => 'root',
-        :mode => '0600'
+        owner: 'root',
+        group: 'root',
+        mode: '0600'
         )
     end
 
@@ -125,7 +125,7 @@ SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('ilikerandompasswords');"
 
     it 'steps into mariadb_service and creates execute[install-grants]' do
       expect(fedora_20_default_run).to_not run_execute('install-grants').with(
-        :command => '/usr/bin/mysql -u root -pilikerandompasswords < /etc/mysql_grants.sql'
+        command: '/usr/bin/mysql -u root -pilikerandompasswords < /etc/mysql_grants.sql'
         )
     end
 
@@ -135,7 +135,7 @@ SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('ilikerandompasswords');"
 
     it 'steps into mariadb_service and creates execute[assign-root-password]' do
       expect(fedora_20_default_run).to run_execute('assign-root-password').with(
-        :command => '/usr/bin/mysqladmin -u root password ilikerandompasswords'
+        command: '/usr/bin/mysqladmin -u root password ilikerandompasswords'
         )
     end
   end

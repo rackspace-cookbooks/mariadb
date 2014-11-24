@@ -3,9 +3,9 @@ require 'spec_helper'
 describe 'stepped into mariadb_test_custom::server on debian-7.5' do
   let(:debian_7_5_custom_run) do
     ChefSpec::SoloRunner.new(
-      :step_into => 'mariadb_service',
-      :platform => 'debian',
-      :version => '7.5'
+      step_into: 'mariadb_service',
+      platform: 'debian',
+      version: '7.5'
       ) do |node|
       node.set['mariadb']['service_name'] = 'debian_7_5_custom'
       node.set['mariadb']['version'] = '10.1'
@@ -43,9 +43,9 @@ GRANT ALL PRIVILEGES ON *.* TO 'root'@'1.2.3.4/5' IDENTIFIED BY 'YUNOSETPASSWORD
   context 'when using default parameters' do
     it 'creates mariadb_service[debian_7_5_custom]' do
       expect(debian_7_5_custom_run).to create_mariadb_service('debian_7_5_custom').with(
-        :version => '10.1',
-        :port => '3308',
-        :data_dir => '/data'
+        version: '10.1',
+        port: '3308',
+        data_dir: '/data'
         )
     end
 
@@ -55,24 +55,24 @@ GRANT ALL PRIVILEGES ON *.* TO 'root'@'1.2.3.4/5' IDENTIFIED BY 'YUNOSETPASSWORD
 
     it 'steps into mariadb_service and creates directory[/var/cache/local/preseeding]' do
       expect(debian_7_5_custom_run).to create_directory('/var/cache/local/preseeding').with(
-        :owner => 'root',
-        :group => 'root',
-        :mode => '0755',
-        :recursive => true
+        owner: 'root',
+        group: 'root',
+        mode: '0755',
+        recursive: true
         )
     end
 
     it 'steps into mariadb_service and creates template[/var/cache/local/preseeding/mariadb-server.seed]' do
       expect(debian_7_5_custom_run).to create_template('/var/cache/local/preseeding/mariadb-server.seed').with(
-        :owner => 'root',
-        :group => 'root',
-        :mode => '0600'
+        owner: 'root',
+        group: 'root',
+        mode: '0600'
         )
     end
 
     it 'steps into mariadb_service and creates execute[preseed mariadb-server]' do
       expect(debian_7_5_custom_run).to_not run_execute('preseed mariadb-server').with(
-        :command => '/usr/bin/debconf-set-selections /var/cache/local/preseeding/mariadb-server.seed'
+        command: '/usr/bin/debconf-set-selections /var/cache/local/preseeding/mariadb-server.seed'
         )
     end
 
@@ -87,42 +87,42 @@ GRANT ALL PRIVILEGES ON *.* TO 'root'@'1.2.3.4/5' IDENTIFIED BY 'YUNOSETPASSWORD
 
     it 'steps into mariadb_service and creates directory[/etc/mysql/conf.d]' do
       expect(debian_7_5_custom_run).to create_directory('/etc/mysql/conf.d').with(
-        :owner => 'mysql',
-        :group => 'mysql',
-        :mode => '0750',
-        :recursive => true
+        owner: 'mysql',
+        group: 'mysql',
+        mode: '0750',
+        recursive: true
         )
     end
 
     it 'steps into mariadb_service and creates directory[/var/run/mysqld]' do
       expect(debian_7_5_custom_run).to create_directory('/var/run/mysqld').with(
-        :owner => 'mysql',
-        :group => 'mysql',
-        :mode => '0755',
-        :recursive => true
+        owner: 'mysql',
+        group: 'mysql',
+        mode: '0755',
+        recursive: true
         )
     end
 
     it 'steps into mariadb_service and creates directory[/data]' do
       expect(debian_7_5_custom_run).to create_directory('/data').with(
-        :owner => 'mysql',
-        :group => 'mysql',
-        :mode => '0750',
-        :recursive => true
+        owner: 'mysql',
+        group: 'mysql',
+        mode: '0750',
+        recursive: true
         )
     end
 
     it 'steps into mariadb_service and creates execute[assign-root-password]' do
       expect(debian_7_5_custom_run).to run_execute('assign-root-password').with(
-        :command => '/usr/bin/mysqladmin -u root password YUNOSETPASSWORD'
+        command: '/usr/bin/mysqladmin -u root password YUNOSETPASSWORD'
         )
     end
 
     it 'steps into mariadb_service and creates template[/etc/mysql_grants.sql]' do
       expect(debian_7_5_custom_run).to create_template('/etc/mysql_grants.sql').with(
-        :owner => 'root',
-        :group => 'root',
-        :mode => '0600'
+        owner: 'root',
+        group: 'root',
+        mode: '0600'
         )
     end
 
@@ -134,25 +134,25 @@ GRANT ALL PRIVILEGES ON *.* TO 'root'@'1.2.3.4/5' IDENTIFIED BY 'YUNOSETPASSWORD
 
     it 'steps into mariadb_service and creates execute[install-grants]' do
       expect(debian_7_5_custom_run).to_not run_execute('install-grants').with(
-        :command => '/usr/bin/mysql -u root -pYUNOSETPASSWORD < /etc/mysql_grants.sql'
+        command: '/usr/bin/mysql -u root -pYUNOSETPASSWORD < /etc/mysql_grants.sql'
         )
     end
 
     it 'steps into mariadb_service and creates template[/etc/mysql/debian.cnf]' do
       expect(debian_7_5_custom_run).to create_template('/etc/mysql/debian.cnf').with(
-        :cookbook => 'mariadb',
-        :source => 'debian/debian.cnf.erb',
-        :owner => 'root',
-        :group => 'root',
-        :mode => '0600'
+        cookbook: 'mariadb',
+        source: 'debian/debian.cnf.erb',
+        owner: 'root',
+        group: 'root',
+        mode: '0600'
         )
     end
 
     it 'steps into mariadb_service and creates template[/etc/mysql/my.cnf]' do
       expect(debian_7_5_custom_run).to create_template('/etc/mysql/my.cnf').with(
-        :owner => 'mysql',
-        :group => 'mysql',
-        :mode => '0600'
+        owner: 'mysql',
+        group: 'mysql',
+        mode: '0600'
         )
     end
 

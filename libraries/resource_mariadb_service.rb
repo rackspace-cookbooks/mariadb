@@ -8,22 +8,22 @@ class Chef
       actions :create, :restart, :reload
       default_action :create
 
-      attribute :allow_remote_root, :kind_of => [TrueClass, FalseClass], :default => false
-      attribute :data_dir, :kind_of => String, :default => nil
-      attribute :package_name, :kind_of => String, :default => nil
-      attribute :port, :kind_of => String, :default => '3306'
-      attribute :remove_anonymous_users, :kind_of => [TrueClass, FalseClass], :default => true
-      attribute :remove_test_database, :kind_of => [TrueClass, FalseClass], :default => true
-      attribute :root_network_acl, :kind_of => Array, :default => []
-      attribute :server_debian_password, :kind_of => String, :default => 'gnuslashlinux4ev4r'
-      attribute :server_repl_password, :kind_of => String, :default => nil
-      attribute :server_root_password, :kind_of => String, :default => 'ilikerandompasswords'
-      attribute :service_name, :kind_of => String, :name_attribute => true
-      attribute :template_source, :kind_of => String, :default => nil
-      attribute :version, :kind_of => String, :default => nil
-      attribute :package_version, :kind_of => String, :default => nil
-      attribute :package_action, :kind_of => String, :default => nil
-      attribute :enable_utf8, :kind_of => String, :default => false
+      attribute :allow_remote_root, kind_of: [TrueClass, FalseClass], default: false
+      attribute :data_dir, kind_of: String, default: nil
+      attribute :package_name, kind_of: String, default: nil
+      attribute :port, kind_of: String, default: '3306'
+      attribute :remove_anonymous_users, kind_of: [TrueClass, FalseClass], default: true
+      attribute :remove_test_database, kind_of: [TrueClass, FalseClass], default: true
+      attribute :root_network_acl, kind_of: Array, default: []
+      attribute :server_debian_password, kind_of: String, default: 'gnuslashlinux4ev4r'
+      attribute :server_repl_password, kind_of: String, default: nil
+      attribute :server_root_password, kind_of: String, default: 'ilikerandompasswords'
+      attribute :service_name, kind_of: String, name_attribute: true
+      attribute :template_source, kind_of: String, default: nil
+      attribute :version, kind_of: String, default: nil
+      attribute :package_version, kind_of: String, default: nil
+      attribute :package_action, kind_of: String, default: nil
+      attribute :enable_utf8, kind_of: String, default: false
     end
 
     include Opscode::Mariadb::Helpers

@@ -3,9 +3,9 @@ require 'spec_helper'
 describe 'stepped into mariadb_test_custom::server on centos-6.4' do
   let(:centos_6_4_5_5_stepinto_run) do
     ChefSpec::SoloRunner.new(
-      :step_into => 'mariadb_service',
-      :platform => 'centos',
-      :version => '6.4'
+      step_into: 'mariadb_service',
+      platform: 'centos',
+      version: '6.4'
       ) do |node|
       node.set['mariadb']['service_name'] = 'centos_6_4_5_5'
       node.set['mariadb']['version'] = '5.5'
@@ -27,9 +27,9 @@ describe 'stepped into mariadb_test_custom::server on centos-6.4' do
   context 'when using default parameters' do
     it 'creates mariadb_service[centos_6_4_5_5]' do
       expect(centos_6_4_5_5_stepinto_run).to create_mariadb_service('centos_6_4_5_5').with(
-        :version => '5.5',
-        :port => '3308',
-        :data_dir => '/data'
+        version: '5.5',
+        port: '3308',
+        data_dir: '/data'
         )
     end
 
@@ -39,36 +39,36 @@ describe 'stepped into mariadb_test_custom::server on centos-6.4' do
 
     it 'steps into mariadb_service and creates directory[/etc/mysql/conf.d]' do
       expect(centos_6_4_5_5_stepinto_run).to create_directory('/etc/mysql/conf.d').with(
-        :owner => 'mysql',
-        :group => 'mysql',
-        :mode => '0750',
-        :recursive => true
+        owner: 'mysql',
+        group: 'mysql',
+        mode: '0750',
+        recursive: true
         )
     end
 
     it 'steps into mariadb_service and creates directory[/var/run/mysqld]' do
       expect(centos_6_4_5_5_stepinto_run).to create_directory('/var/run/mysqld').with(
-        :owner => 'mysql',
-        :group => 'mysql',
-        :mode => '0755',
-        :recursive => true
+        owner: 'mysql',
+        group: 'mysql',
+        mode: '0755',
+        recursive: true
         )
     end
 
     it 'steps into mariadb_service and creates directory[/data]' do
       expect(centos_6_4_5_5_stepinto_run).to create_directory('/data').with(
-        :owner => 'mysql',
-        :group => 'mysql',
-        :mode => '0755',
-        :recursive => true
+        owner: 'mysql',
+        group: 'mysql',
+        mode: '0755',
+        recursive: true
         )
     end
 
     it 'steps into mariadb_service and creates template[/etc/my.cnf]' do
       expect(centos_6_4_5_5_stepinto_run).to create_template('/etc/my.cnf').with(
-        :owner => 'mysql',
-        :group => 'mysql',
-        :mode => '0600'
+        owner: 'mysql',
+        group: 'mysql',
+        mode: '0600'
         )
     end
 
@@ -79,22 +79,22 @@ describe 'stepped into mariadb_test_custom::server on centos-6.4' do
 
     it 'steps into mariadb_service and creates execute[assign-root-password]' do
       expect(centos_6_4_5_5_stepinto_run).to run_execute('assign-root-password').with(
-        :command => '/usr/bin/mysqladmin -u root password ilikerandompasswords'
+        command: '/usr/bin/mysqladmin -u root password ilikerandompasswords'
         )
     end
 
     it 'steps into mariadb_service and creates template[/etc/mysql_grants.sql]' do
       expect(centos_6_4_5_5_stepinto_run).to create_template('/etc/mysql_grants.sql').with(
-        :cookbook => 'mariadb',
-        :owner => 'root',
-        :group => 'root',
-        :mode => '0600'
+        cookbook: 'mariadb',
+        owner: 'root',
+        group: 'root',
+        mode: '0600'
         )
     end
 
     it 'steps into mariadb_service and creates execute[install-grants]' do
       expect(centos_6_4_5_5_stepinto_run).to_not run_execute('install-grants').with(
-        :command => '/usr/bin/mysql -u root -pilikerandompasswords < /etc/mysql_grants.sql'
+        command: '/usr/bin/mysql -u root -pilikerandompasswords < /etc/mysql_grants.sql'
         )
     end
 
