@@ -30,24 +30,24 @@ class Chef
             owner 'mysql'
             group 'mysql'
             mode '0750'
-            action :create
             recursive true
+            action :create
           end
 
           directory run_dir do
             owner 'mysql'
             group 'mysql'
             mode '0755'
-            action :create
             recursive true
+            action :create
           end
 
           directory new_resource.parsed_data_dir do
             owner 'mysql'
             group 'mysql'
             mode '0755'
-            action :create
             recursive true
+            action :create
           end
 
           service 'mysql' do
@@ -75,7 +75,7 @@ class Chef
 
           execute 'install-grants' do
             sensitive true if sensitive_supported?
-            cmd = "#{prefix_dir}/bin/mysql"
+            cmd = '/usr/bin/mysql'
             cmd << ' -u root '
             cmd << "#{pass_string} < /etc/mysql_grants.sql"
             command cmd
@@ -99,7 +99,6 @@ class Chef
               lc_messages_dir: lc_messages_dir,
               pid_file: pid_file,
               port: new_resource.parsed_port,
-              prefix_dir: prefix_dir,
               socket_file: socket_file,
               enable_utf8: new_resource.parsed_enable_utf8
               )
@@ -112,7 +111,7 @@ class Chef
             user 'root'
             code <<-EOH
               service mysql stop \
-              && for i in `ls /var/lib/mysql | grep -v mysqld.sock` ; do mv /var/lib/mysql/$i #{new_resource.parsed_data_dir} ; done
+              && for i in `ls /var/lib/mysql | grep -v mysql.sock` ; do mv /var/lib/mysql/$i #{new_resource.parsed_data_dir} ; done
               EOH
             action :nothing
             creates "#{new_resource.parsed_data_dir}/ibdata1"
@@ -122,12 +121,12 @@ class Chef
 
           execute 'assign-root-password' do
             sensitive true if sensitive_supported?
-            cmd = "#{prefix_dir}/bin/mysqladmin"
+            cmd = '/usr/bin/mysqladmin'
             cmd << ' -u root password '
             cmd << Shellwords.escape(new_resource.parsed_server_root_password)
             command cmd
             action :run
-            only_if "#{prefix_dir}/bin/mysql -u root -e 'show databases;'"
+            only_if '/usr/bin/mysql -u root -e \'show databases;\''
           end
 
           execute 'create root marker' do
