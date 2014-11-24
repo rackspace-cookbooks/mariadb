@@ -6,6 +6,35 @@ group :lint do
 end
 
 group :unit do
-  gem 'chefspec',   '~> 4.0'
-  gem 'berkshelf'
+  gem 'berkshelf', '~> 3'
+  gem 'chefspec'
+  gem 'chef-sugar'
+end
+
+group :kitchen_common do
+  gem 'test-kitchen'
+end
+
+group :kitchen_vagrant do
+  gem 'kitchen-vagrant'
+  gem 'vagrant-wrapper'
+end
+
+group :kitchen_rackspace do
+  gem 'kitchen-rackspace'
+end
+
+group :kitchen_openstack do
+  gem 'kitchen-openstack'
+end
+
+group :development do
+  gem 'growl'
+  gem 'rb-fsevent'
+  gem 'guard'
+  gem 'guard-kitchen'
+  gem 'guard-foodcritic'
+  gem 'guard-rubocop'
+  gem 'fauxhai'
+  gem 'pry-nav'
 end
