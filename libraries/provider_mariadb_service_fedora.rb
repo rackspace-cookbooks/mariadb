@@ -26,7 +26,7 @@ class Chef
             action new_resource.parsed_package_action
           end
 
-          directory include_dir do
+          directory '/etc/my.cnf.d' do
             owner 'mysql'
             group 'mysql'
             mode '0750'
@@ -34,7 +34,7 @@ class Chef
             action :create
           end
 
-          directory run_dir do
+          directory '/var/run/mysqld' do
             owner 'mysql'
             group 'mysql'
             mode '0755'
@@ -56,7 +56,7 @@ class Chef
           end
 
           execute 'wait for mysql' do
-            command "until [ -S #{socket_file} ] ; do sleep 1 ; done"
+            command 'until [ -S /var/lib/mysql/mysql.sock ] ; do sleep 1 ; done'
             timeout 10
             action :run
           end
@@ -75,12 +75,15 @@ class Chef
 
           execute 'install-grants' do
             sensitive true if sensitive_supported?
-            cmd = '/usr/bin/mysql'
-            cmd << ' -u root '
-            cmd << "#{pass_string} < /etc/mysql_grants.sql"
+            cmd = "/usr/bin/mysql -u root #{pass_string} < /etc/mysql_grants.sql"
             command cmd
             action :nothing
             notifies :run, 'execute[create root marker]'
+          end
+
+          bash 'stop mysql' do
+            user 'root'
+            code 'service mysql stop'
           end
 
           template '/etc/my.cnf' do
@@ -95,11 +98,11 @@ class Chef
             mode '0600'
             variables(
               data_dir: new_resource.parsed_data_dir,
-              include_dir: include_dir,
-              lc_messages_dir: lc_messages_dir,
-              pid_file: pid_file,
+              include_dir: '/etc/my.cnf.d',
+              lc_messages_dir: nil,
+              pid_file: '/var/run/mysqld/mysql.pid',
               port: new_resource.parsed_port,
-              socket_file: socket_file,
+              socket_file: '/var/lib/mysql/mysql.sock',
               enable_utf8: new_resource.parsed_enable_utf8
               )
             action :create
@@ -117,6 +120,11 @@ class Chef
             creates "#{new_resource.parsed_data_dir}/ibdata1"
             creates "#{new_resource.parsed_data_dir}/ib_logfile0"
             creates "#{new_resource.parsed_data_dir}/ib_logfile1"
+          end
+
+          bash 'start mysql' do
+            user 'root'
+            code 'service mysql start'
           end
 
           execute 'assign-root-password' do
