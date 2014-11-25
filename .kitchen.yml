@@ -71,12 +71,13 @@ suites:
     - recipe[mariadb_test_custom::server]
     attributes:
       mariadb:
+        server_root_password: 'nondefault'
         version: '10.0'
         server_package_version: '10.0'
         port: '3308'
         data_dir: '/data'
 
-  - name: server10.1-default
+  - name: server101-default
     run_list:
     - recipe[mariadb_test_custom::server]
     attributes:
@@ -84,11 +85,12 @@ suites:
         version: '10.1'
         server_package_version: '10.1'
 
-  - name: server10.1-custom
+  - name: server101-custom
     run_list:
     - recipe[mariadb_test_custom::server]
     attributes:
       mariadb:
+        server_root_password: 'nondefault'
         version: '10.1'
         server_package_version: '10.1'
         port: '3308'
