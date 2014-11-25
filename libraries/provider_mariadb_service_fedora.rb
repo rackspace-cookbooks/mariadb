@@ -106,7 +106,7 @@ class Chef
               enable_utf8: new_resource.parsed_enable_utf8
               )
             action :create
-            notifies :run, 'bash[move mariadb data to datadir]'
+            notifies :run, 'bash[move mariadb data to datadir]', :immediately
             notifies :restart, 'service[mysql]'
           end
 

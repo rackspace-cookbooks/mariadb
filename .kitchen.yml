@@ -52,6 +52,7 @@ suites:
     - recipe[mariadb_test_custom::server]
     attributes:
       mariadb:
+        server_root_password: 'nondefault'
         version: '5.5'
         server_package_version: '5.5'
         port: '3308'
