@@ -10,17 +10,9 @@ platforms:
   - name: centos-6.6
     run_list:
       - recipe[mariadb::repo]
-#  - name: centos-7.0
-#    run_list:
-#      - recipe[mariadb::repo]
   - name: fedora-20
     run_list:
       - recipe[mariadb::repo]
-#  no box file...
-#  - name: debian-jessie
-#    run_list:
-#      - recipe[mariadb::repo]
-#      - recipe[apt]
   - name: debian-7.7
     run_list:
       - recipe[mariadb::repo]

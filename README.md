@@ -6,6 +6,8 @@ resources. These resources are utilized by the `mariadb::client`
 and `mariadb::server` recipes, or can be consumed in other recipes by
 depending on the MySQL cookbook.
 
+This cookbook also provides recipes to allow for setup of basic master/slave(s) replication on build.
+
 This cookbook does its best to follow platform native idioms at all
 times. This means things like logs, pid files, sockets, and service
 managers work "as expected" by an administrator familiar with a given
@@ -13,14 +15,12 @@ platform.
 
 Scope
 -----
-This cookbook is concerned with the "MySQL Community Server",
-particularly those shipped with F/OSS Unix and Linux distributions. It
-does not address forks and value-added repackaged MySQL distributions
-like Drizzle, MariaDB, or Percona.
+This cookbook is concerned with the "MariaDB Community Server" version,
+packages are installed from the offical mariadb repositories and not specific OS versions.
 
 This cookbook does not try to encompass every single configuration
-option available for MySQL. Instead, it provides a "just enough" to
-get a MySQL server running, then allows the user to specify additional
+option available for MariaDB. Instead, it provides a "just enough" to
+get a the server running, then allows the user to specify additional
 custom configuration.
 
 Requirements
@@ -65,11 +65,11 @@ is `mariadb_service`. This means that this cookbook does _not_ setup
 
 The `version` parameter will allow the user to select from the
 versions available for the platform, where applicable. When omitted,
-it will install the default MySQL version for the target platform.
-Available version numbers are `5.0`, `5.1`, `5.5`, and `5.6`,
-depending on platform. See PLATFORMS.md for details.
+it will install the default MariaDB version for the target platform.
+Available version numbers are `5.5`, `10.0`, and `10.1`,
+depending on platform.
 
-The `port` parameter determines the listen port for the mariadbd
+The `port` parameter determines the listen port for the mariadb
 service. When omitted, it will default to '3306'.
 
 The `data_dir` parameter determines where the actual data files are
@@ -118,7 +118,7 @@ The mariadb_service resource supports :create, :restart, and :reload actions.
 
 ### mariadb_client
 
-The `mariadb_client` resource installs or removes the MySQL client binaries and
+The `mariadb_client` resource installs or removes the MariaDB client binaries and
 development libraries
 
 Recipes
@@ -131,6 +131,16 @@ from node attributes.
 ### mariadb::client
 
 This recipe calls a `mariadb_client` resource, with action :create
+
+### mariadb::relication_master
+
+This recipe is a wrapper around the `mariadb_service` which sets the server up as
+a master server for replication.
+
+### mariadb::replication_slave
+
+This recipe is a wrapper around the `mariadb_service` which sets the server up as
+a slave server for replication.
 
 Usage
 -----
@@ -148,12 +158,12 @@ Include `'recipe[mariadb::server]'` or `'recipe[mariadb::client]'` in your run_l
     node.set['mariadb']['server_root_password'] = 'yolo'
     node.set['mariadb']['port'] = '3308'
     node.set['mariadb']['data_dir'] = '/data'
-    
+
     include_recipe 'mariadb::server'
 
     template '/etc/mariadb/conf.d/mysite.cnf' do
       owner 'mariadb'
-      owner 'mariadb'      
+      owner 'mariadb'
       source 'mysite.cnf.erb'
       notifies :restart, 'mariadb_service[default]'
     end
@@ -162,7 +172,7 @@ Include `'recipe[mariadb::server]'` or `'recipe[mariadb::client]'` in your run_l
 
     template '/etc/mariadb/conf.d/mysite.cnf' do
       owner 'mariadb'
-      owner 'mariadb'      
+      owner 'mariadb'
       source 'mysite.cnf.erb'
       notifies :restart, 'mariadb_service[default]'
     end
@@ -175,23 +185,59 @@ Include `'recipe[mariadb::server]'` or `'recipe[mariadb::client]'` in your run_l
       action :create
     end
 
+### Setup of master/slave(s) replication
+
+TWO CRITICAL STEPS TO REMEMBER:
+
+First the IP addresses of master and slaves servers must be set as environment attributes prior to convergence of servers.
+
+Second the master server must complete a converge before slaves can be converged, otherwise they will not be able to connect to the master server and will fail the converge.
+
+You may also want to modify attributes such as slave_user and server_repl_password
+to met your specific needs.
+
+So as long as IP addresses are set in environment or roles, the only thing that is
+required to get replication working is to include the recipes in your run list.
+
+Master Server -  include mariadb::replication_master
+Slave(s) Servers - inclide mariadb::replication_slave
+
 Attributes
 ----------
 
     default['mariadb']['service_name'] = 'default'
     default['mariadb']['server_root_password'] = 'ilikerandompasswords'
     default['mariadb']['server_debian_password'] = 'postinstallscriptsarestupid'
+    default['mariadb']['server_repl_password'] = 'needabettapasswd'
+    default['mariadb']['replication']['slave_user'] = 'replicant'
+
+    default['mariadb']['config_dir'] = '/etc/mysql'
     default['mariadb']['data_dir'] = '/var/lib/mariadb'
     default['mariadb']['port'] = '3306'
+    default['mariadb']['bind_ip'] = nil
+
 
     ### used in grants.sql
     default['mariadb']['allow_remote_root'] = false
     default['mariadb']['remove_anonymous_users'] = true
     default['mariadb']['root_network_acl'] = nil
 
+    ### server packag version and action
+    default['mariadb']['version'] = '10.1'
+    default['mariadb']['server_package_version'] = '10.1'
+    default['mariadb']['server_package_action'] = 'install'
+    default['mariadb']['templates']['user.my.cnf']['cookbook'] = 'mariadb'
+    default['mariadb']['templates']['user.my.cnf']['source'] = 'user.my.cnf.erb'
+
+    ### replication specific attributes
+    default['mariadb']['replication']['master'] = nil
+    default['mariadb']['replication']['slaves'] = %w()
+
+
 License & Authors
 -----------------
 - Author:: Matthew Thode(<matt.thode@rackspace.com>)
+- Author:: Christopher Coffey(<christopher.coffey@rackspace.com>)
 
 ```text
 Copyright:: 2014 Rackspace Hosting, Inc.
