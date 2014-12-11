@@ -28,7 +28,7 @@ apt_repository 'mariadb-apt-repo' do
   deb_src true
   action :add
   only_if { platform_family?('debian') }
-end
+end.run_action(:add)
 
 if platform_family?('rhel') || platform_family?('fedora')
   if node['kernel']['machine'] == 'x86_64'
@@ -42,5 +42,5 @@ if platform_family?('rhel') || platform_family?('fedora')
     baseurl repourl
     gpgkey 'https://yum.mariadb.org/RPM-GPG-KEY-MariaDB'
     action :create
-  end
+  end.run_action(:create)
 end

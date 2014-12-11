@@ -102,6 +102,7 @@ class Chef
               lc_messages_dir: nil,
               pid_file: '/var/run/mysqld/mysql.pid',
               port: new_resource.parsed_port,
+              bind_address: node['mariadb']['bind_ip'],
               socket_file: '/var/lib/mysql/mysql.sock',
               enable_utf8: new_resource.parsed_enable_utf8
               )

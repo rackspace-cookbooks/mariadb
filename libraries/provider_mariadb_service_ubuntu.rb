@@ -170,6 +170,7 @@ class Chef
               pid_file: pid_file,
               socket_file: socket_file,
               port: new_resource.parsed_port,
+              bind_address: node['mariadb']['bind_ip'],
               include_dir: include_dir,
               enable_utf8: new_resource.parsed_enable_utf8
               )

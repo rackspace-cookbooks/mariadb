@@ -16,3 +16,5 @@ supports 'ubuntu'
 
 depends 'apt'
 depends 'yum'
+depends 'chef-sugar'
+depends 'build-essential'

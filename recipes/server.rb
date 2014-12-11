@@ -17,7 +17,10 @@
 # limitations under the License.
 #
 
+include_recipe 'chef-sugar'
 include_recipe 'mariadb::repo'
+
+node.set_unless['mariadb']['bind_ip'] = best_ip_for(node)
 
 mariadb_service node['mariadb']['service_name'] do
   version node['mariadb']['version']
@@ -34,4 +37,18 @@ mariadb_service node['mariadb']['service_name'] do
   package_action node['mariadb']['server_package_action']
   enable_utf8 node['mariadb']['enable_utf8']
   action :create
+end
+
+# add /root/.my.cnf file to system for local MySQL management
+template '/root/.my.cnf' do
+  cookbook node['mariadb']['replication']['templates']['user.my.cnf']['cookbook']
+  source node['mariadb']['replication']['templates']['user.my.cnf']['source']
+  owner 'root'
+  group 'root'
+  mode '0600'
+  variables(
+  cookbook_name: cookbook_name,
+  user: 'root',
+  pass: node['mariadb']['server_root_password']
+  )
 end

@@ -23,7 +23,7 @@ module MariadbCookbook
       def pid_file
         case node['platform_version'].to_i
         when 2014, 2013, 7, 6, 5
-          pid_file = '/var/run/mysqld/mysql.pid'
+          pid_file = "/var/lib/mysql/#{node['hostname']}.pid"
         end
         pid_file
       end

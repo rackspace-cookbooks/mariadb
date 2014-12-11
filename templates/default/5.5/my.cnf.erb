@@ -22,6 +22,9 @@ socket                         = <%= @socket_file %>
 <% if @port %>
 port                           = <%= @port %>
 <% end %>
+<% if @bind_address %>
+bind-address                   = <%= @bind_address %>
+<% end %>
 <% if @data_dir %>
 datadir                        = <%= @data_dir %>
 <% end %>
