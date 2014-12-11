@@ -19,4 +19,4 @@
 
 mariadb_client 'default' do
   action :create
-end
+end.run_action(:create)

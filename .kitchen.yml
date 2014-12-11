@@ -87,3 +87,23 @@ suites:
         server_package_version: '10.1'
         port: '3308'
         data_dir: '/data'
+
+  - name: server10-replication-master
+    run_list:
+    - recipe[mariadb::replication_master]
+    attributes:
+      mariadb:
+        version: '10.0'
+        replication:
+          master: '1.2.3.4'
+          slaves: ['5.6.7.8']
+
+  - name: server10-replication-slave
+    run_list:
+    - recipe[mariadb::replication_slave]
+    attributes:
+      mariadb:
+        version: '10.0'
+        replication:
+          master: '1.2.3.4'
+          slaves: ['5.6.7.8']

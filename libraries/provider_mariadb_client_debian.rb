@@ -5,7 +5,7 @@ class Chef
     class MariadbClient
       class Debian < Chef::Provider::MariadbClient
         def packages
-          %w(mariadb-client libmariadbclient-dev)
+          %w(mariadb-client libmariadbclient-dev libssl-dev)
         end
       end
     end

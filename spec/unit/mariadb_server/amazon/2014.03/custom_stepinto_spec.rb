@@ -26,8 +26,7 @@ describe 'stepped into mariadb_test_custom::server on amazon-2014.03' do
   end
 
   let(:grants_sql_content_custom_amazon_2014_03) do
-    "GRANT REPLICATION SLAVE ON *.* TO 'repl'@'%' identified by 'syncmebabyonemoretime';
-GRANT ALL ON *.* TO 'root'@'%' IDENTIFIED BY 'YUNOSETPASSWORD' WITH GRANT OPTION;
+    "GRANT ALL ON *.* TO 'root'@'%' IDENTIFIED BY 'YUNOSETPASSWORD' WITH GRANT OPTION;
 SET PASSWORD FOR 'root'@'localhost' = PASSWORD('YUNOSETPASSWORD');
 SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('YUNOSETPASSWORD');
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'10.9.8.7/6' IDENTIFIED BY 'YUNOSETPASSWORD' WITH GRANT OPTION;

@@ -27,7 +27,6 @@ describe 'stepped into mariadb_test_custom::server on debian-jessie' do
 
   let(:grants_sql_content_custom_debian_jessie) do
     "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, RELOAD, SHUTDOWN, PROCESS, FILE, REFERENCES, INDEX, ALTER, SHOW DATABASES, SUPER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'debian-sys-maint'@'localhost' IDENTIFIED BY 'postinstallscriptsarestupid' WITH GRANT OPTION;
-GRANT REPLICATION SLAVE ON *.* TO 'repl'@'%' identified by 'syncmebabyonemoretime';
 GRANT ALL ON *.* TO 'root'@'%' IDENTIFIED BY 'YUNOSETPASSWORD' WITH GRANT OPTION;
 SET PASSWORD FOR 'root'@'localhost' = PASSWORD('YUNOSETPASSWORD');
 SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('YUNOSETPASSWORD');
