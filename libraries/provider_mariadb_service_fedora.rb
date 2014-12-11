@@ -17,7 +17,6 @@ class Chef
         include Opscode::Mariadb::Helpers
 
         action :create do
-
           unless sensitive_supported?
             Chef::Log.debug("Sensitive attribute disabled, chef-client version #{Chef::VERSION} is lower than 11.14.0")
           end
@@ -61,7 +60,7 @@ class Chef
             action :run
           end
 
-          template '/etc/mysql_grants.sql' do
+          template '/etc/mysql_grants.sql' do  # ~FC009
             sensitive true if sensitive_supported?
             cookbook 'mariadb'
             source 'grants/grants.sql.erb'
@@ -73,7 +72,7 @@ class Chef
             notifies :run, 'execute[install-grants]'
           end
 
-          execute 'install-grants' do
+          execute 'install-grants' do  # ~FC009
             sensitive true if sensitive_supported?
             cmd = "/usr/bin/mysql -u root #{pass_string} < /etc/mysql_grants.sql"
             command cmd

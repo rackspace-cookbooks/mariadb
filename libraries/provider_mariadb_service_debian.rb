@@ -17,7 +17,6 @@ class Chef
         include Opscode::Mariadb::Helpers
 
         action :create do
-
           unless sensitive_supported?
             Chef::Log.debug("Sensitive attribute disabled, chef-client version #{Chef::VERSION} is lower than 11.14.0")
           end
@@ -63,7 +62,7 @@ class Chef
             action [:start, :enable]
           end
 
-          execute 'assign-root-password' do
+          execute 'assign-root-password' do  # ~FC009
             sensitive true if sensitive_supported?
             cmd = "#{prefix_dir}/bin/mysqladmin"
             cmd << ' -u root password '
@@ -73,7 +72,7 @@ class Chef
             only_if "#{prefix_dir}/bin/mysql -u root -e 'show databases;'"
           end
 
-          template '/etc/mysql_grants.sql' do
+          template '/etc/mysql_grants.sql' do  # ~FC009
             sensitive true if sensitive_supported?
             cookbook 'mariadb'
             source 'grants/grants.sql.erb'
@@ -106,7 +105,7 @@ class Chef
           end
 
           #
-          directory include_dir do
+          directory include_dir do  # ~FC005
             owner 'mysql'
             group 'mysql'
             mode '0750'
